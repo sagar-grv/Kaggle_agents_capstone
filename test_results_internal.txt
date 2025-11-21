@@ -4,74 +4,42 @@
 
 🔹 TEST: Complex Intent Prioritization
    Email: "I lost my credit card at the airport! Also what is my checking balance?"
-   ⏱️ Time: 14.09s
+   ⏱️ Time: 27.81s
    🔀 Routed To: CardAgent
    ⚖️ Auditor: ⚖️ Auditor Verdict: APPROVED
-   ✉️ Response Snippet: Subject: Important Security Update: Action Taken Regarding Your Lost Card - Case [Date/Time]
+   ✉️ Response Snippet: **Subject:** Action Taken: Your Lost Credit Card Report and Account Security at BankAssist
 
-Dear A...
+Dear Ms....
    ✅ Routing Correct
    ✅ Compliance Passed
 
 🔹 TEST: Simple Balance Check
    Email: "Can you tell me how much money I have?"
-   ⏱️ Time: 9.96s
+   ⏱️ Time: 22.79s
    🔀 Routed To: AccountAgent
-   ⚖️ Auditor: ⚖️ Auditor Verdict: APPROVED
-   ✉️ Response Snippet: Subject: Re: Your Account Balance Inquiry
-
-Dear Alice Johnson,
-
-Thank you for reaching out to BankAs...
+   ⚖️ Auditor: ⚖️ Auditor Verdict: REJECTED: The draft email unnecessarily volunteers specific Personal Financial Information (PFI), detailing specific recent transactions (Netflix, Walmart, Salary). This violates data minimization principles and standard security protocols for non-transactional customer support communications, as transaction details should be viewed within the customer's secure online banking portal.
+   ✉️ Response Snippet: Your request is being reviewed by a human manager....
    ✅ Routing Correct
-   ✅ Compliance Passed
+   ⚠️ Compliance Flagged: ⚖️ Auditor Verdict: REJECTED: The draft email unnecessarily volunteers specific Personal Financial Information (PFI), detailing specific recent transactions (Netflix, Walmart, Salary). This violates data minimization principles and standard security protocols for non-transactional customer support communications, as transaction details should be viewed within the customer's secure online banking portal.
 
 🔹 TEST: Fraud Suspicion
    Email: "I see a transaction I didn't make."
-   ⏱️ Time: 21.46s
+   ⏱️ Time: 15.88s
    🔀 Routed To: CardAgent
    ⚖️ Auditor: ⚖️ Auditor Verdict: APPROVED
-   ✉️ Response Snippet: **Subject: Urgent Security Confirmation Regarding Your Recent Transaction Inquiry - Account Safety C...
+   ✉️ Response Snippet: **Subject:** Immediate Action Taken Regarding Unauthorized Transaction - Card Security Update for Bo...
    ✅ Routing Correct
    ✅ Compliance Passed
 
 🔹 TEST: Loan Inquiry
    Email: "What are your current mortgage rates?"
-   ⏱️ Time: 19.27s
+   ⏱️ Time: 8.65s
    🔀 Routed To: LoanAgent
-   ⚖️ Auditor: ⚖️ Auditor Verdict: REJECTED: The draft fails to meet the required standard for professional and empathetic tone (Rule 4). While functional, it is a purely technical notice and lacks any acknowledgment of customer inconvenience. Furthermore, the directive "Please try again in a moment" risks violating Rule 1 if the high traffic persists, providing the customer with an inaccurate expectation of immediate resolution.
-   ✉️ Response Snippet: Your request is being reviewed by a human manager....
-   ✅ Routing Correct
-   ⚠️ Compliance Flagged: ⚖️ Auditor Verdict: REJECTED: The draft fails to meet the required standard for professional and empathetic tone (Rule 4). While functional, it is a purely technical notice and lacks any acknowledgment of customer inconvenience. Furthermore, the directive "Please try again in a moment" risks violating Rule 1 if the high traffic persists, providing the customer with an inaccurate expectation of immediate resolution.
-EY or ADC found. Please either:
-    - Set the `GOOGLE_API_KEY` environment variable.
-    - Manually pass the key with `genai.configure(api_key=my_api_key)`.
-    - Or set up Application Default Credentials, see https://ai.google.dev/gemini-api/docs/oauth for more information.
-   ✉️ Response Snippet: System Error: 
-  No API_KEY or ADC found. Please either:
-    - Set the `GOOGLE_API_KEY` environment ...
-   ❌ Routing FAILED (Expected CardAgent, got AccountAgent)
-   ⚠️ Compliance Flagged: ⚖️ Auditor Verdict: System Error: 
-  No API_KEY or ADC found. Please either:
-    - Set the `GOOGLE_API_KEY` environment variable.
-    - Manually pass the key with `genai.configure(api_key=my_api_key)`.
-    - Or set up Application Default Credentials, see https://ai.google.dev/gemini-api/docs/oauth for more information.
+   ⚖️ Auditor: ⚖️ Auditor Verdict: APPROVED
+   ✉️ Response Snippet: Subject: Re: Your Inquiry Regarding Current Mortgage Rates - BankAssist
 
-🔹 TEST: Loan Inquiry
-   Email: "What are your current mortgage rates?"
-   ⏱️ Time: 35.89s
-   🔀 Routed To: AccountAgent
-   ⚖️ Auditor: ⚖️ Auditor Verdict: System Error: 
-  No API_KEY or ADC found. Please either:
-    - Set the `GOOGLE_API_KEY` environment variable.
-    - Manually pass the key with `genai.configure(api_key=my_api_key)`.
-    - Or set up Application Default Credentials, see https://ai.google.dev/gemini-api/docs/oauth for more information.
-   ✉️ Response Snippet: System Error: 
-  No API_KEY or ADC found. Please either:
-    - Set the `GOOGLE_API_KEY` environment ...
-   ❌ Routing FAILED (Expected LoanAgent, got AccountAgent)
-   ⚠️ Compliance Flagged: ⚖️ Auditor Verdict: System Error: 
-  No API_KEY or ADC found. Please either:
-    - Set the `GOOGLE_API_KEY` environment variable.
-    - Manually pass the key with `genai.configure(api_key=my_api_key)`.
-    - Or set up Application Default Credentials, see https://ai.google.dev/gemini-api/docs/oauth for more information.
+Dear Charlie Brown,
+
+Thank ...
+   ✅ Routing Correct
+   ✅ Compliance Passed
