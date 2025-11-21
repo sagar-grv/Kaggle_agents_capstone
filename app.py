@@ -136,6 +136,22 @@ with st.sidebar:
         st.success("API Key detected from Environment")
     else:
         st.warning("⚠️ No API Key found. Agents may fail.")
+    
+    st.divider()
+    
+    # Team Information
+    with st.expander("👥 About Team Agens"):
+        st.markdown("""
+        **Kaggle Agents Intensive - Capstone Project**
+        
+        **Team Members:**
+        - [SagarGrv](https://github.com/sagar-grv) - Team Leader
+        - [Rhythm Mantri](https://github.com/RhythmMantri) - Core Developer
+        
+        **Track:** Enterprise Agents  
+        **Project:** BankAssist  
+        Built with Google Gemini Flash
+        """)
 
 st.title("🏦 BankAssist: Intelligent Email Resolution")
 st.markdown("### Enterprise-Grade Multi-Agent System")
