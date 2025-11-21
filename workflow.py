@@ -76,6 +76,8 @@ class BankWorkflow:
             draft_response = self.account_agent.handle(email_content, customer)
         elif target_agent_name == "LoanAgent":
             draft_response = self.loan_agent.handle(email_content, customer)
+        elif target_agent_name == "None":
+            draft_response = "I apologize, but I can only assist with banking-related inquiries. For other matters, please contact our general support line."
         else:
             draft_response = "I am not sure how to help with that yet."
         

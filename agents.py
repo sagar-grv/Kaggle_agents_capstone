@@ -91,7 +91,8 @@ class TriageAgent(Agent):
         Instructions:
         - Analyze the intent of the email.
         - CRITICAL RULE: If the email contains ANY mention of a lost card, stolen card, fraud, or unauthorized transaction, you MUST route to "CardAgent", even if the user also asks about their balance or other topics. Security is the #1 priority.
-        - Output ONLY the name of the agent to route to (e.g., "CardAgent"). Do not add any other text.
+        - Output ONLY the name of the agent to route to (e.g., "CardAgent").
+        - If the email is NOT related to banking (e.g., weather, sports, personal life, coding), output "None".
         """
         # Clean the response to ensure we just get the agent name
         response = self.think(prompt).strip()
@@ -101,7 +102,7 @@ class TriageAgent(Agent):
         if "LoanAgent" in response: return "LoanAgent"
         if "AccountAgent" in response: return "AccountAgent"
         
-        return "AccountAgent" # Default fallback
+        return "None" # Default fallback for unclear/non-banking queries
 
 class AccountAgent(Agent):
     def handle(self, email, customer):
