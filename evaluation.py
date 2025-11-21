@@ -1,7 +1,48 @@
 """
-Agent Evaluation Module
-Implements comprehensive evaluation metrics for the BankAssist multi-agent system.
-Inspired by Google's Agents Development Kit (ADK) evaluation functions.
+Agent Evaluation Module (ADK-Inspired)
+========================================
+
+Implements comprehensive evaluation metrics for the BankAssist multi-agent system,
+inspired by Google's Agents Development Kit (ADK) evaluation functions.
+
+Evaluation Metrics:
+-------------------
+1. Routing Accuracy (0-100%): Measures if emails are routed to the correct agent
+   - Uses keyword-based ground truth comparison
+   - Security keywords trigger CardAgent routing
+   
+2. Response Quality Score (0-100): Multi-factor quality assessment
+   - Length appropriateness (20 pts)
+   - Professional tone indicators (30 pts)
+   - Information richness (30 pts)
+   - Structure and formatting (20 pts)
+   
+3. Compliance Rate (0-100%): Tracks Auditor approval vs rejection
+   - APPROVED responses count toward compliance
+   - REJECTED responses indicate issues
+   
+4. Latency Tracking: Response time monitoring
+   - Per-request duration measurement
+   - Per-agent average latency calculation
+   
+5. Per-Agent Performance: Detailed breakdown by agent type
+   - Request counts
+   - Average latency
+   - Compliance rates
+
+Integration:
+------------
+- Called by BankWorkflow after each email processing
+- Metrics displayed in Evaluation Dashboard tab
+- Exportable to CSV for analysis
+
+Recent Enhancements:
+--------------------
+✅ Detailed interaction logging with timestamps
+✅ Summary metrics for dashboard KPIs
+✅ Agent performance breakdown
+
+Author: BankAssist Team
 """
 
 import time

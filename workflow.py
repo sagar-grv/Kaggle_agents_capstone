@@ -1,3 +1,39 @@
+"""
+BankWorkflow - Email Processing Orchestration
+==============================================
+
+Orchestrates the complete email processing pipeline through the multi-agent system.
+
+Pipeline Stages:
+----------------
+1. Customer Identification: Look up customer in database by email
+2. Triage: Route email to appropriate specialist agent
+3. Execution: Specialist agent generates draft response
+4. Audit: Compliance check by AuditorAgent
+5. Evaluation: Track metrics (routing, quality, compliance, latency)
+6. Response: Return final response with logs and metrics
+
+Integration with Evaluation System:
+------------------------------------
+- Tracks routing accuracy for each request
+- Measures response quality (0-100 score)
+- Monitors compliance rates (APPROVED vs REJECTED)
+- Records latency for performance analysis
+- Logs detailed interaction history
+
+Return Values:
+--------------
+- final_response: Email response text to send to customer
+- logs: List of processing steps for transparency
+- eval_metrics: Dictionary containing:
+  - routing: {expected, actual, is_correct, accuracy}
+  - compliance: {status, compliance_rate}
+  - quality_score: 0-100
+  - duration: Processing time in seconds
+
+Author: BankAssist Team
+"""
+
 from agents import TriageAgent, AccountAgent, CardAgent, AuditorAgent, LoanAgent
 from bank_system import BankDatabase
 from evaluation import AgentEvaluator

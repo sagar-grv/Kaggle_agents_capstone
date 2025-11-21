@@ -1,3 +1,37 @@
+"""
+BankAssist Agent System
+========================
+
+Implements specialized agents for handling different types of banking customer inquiries.
+Each agent is powered by Google Gemini Flash with retry logic and rate limit handling.
+
+Agent Roles:
+------------
+1. TriageAgent: Routes emails to the correct specialist based on content analysis
+2. AccountAgent: Handles account-related queries (balance, transactions, statements)
+3. CardAgent: Manages card security issues (lost/stolen cards, fraud alerts)
+4. LoanAgent: Processes loan applications and credit inquiries
+5. AuditorAgent: Reviews all responses for compliance and quality
+
+LLM Guardrails (Recent Enhancement):
+-------------------------------------
+All specialist agents now include strict guardrails to reject off-topic questions:
+- AccountAgent: Only answers banking services questions
+- CardAgent: Only handles card security matters
+- LoanAgent: Only processes loan/credit inquiries
+
+Non-banking questions (weather, sports, etc.) receive polite rejection messages
+directing users to appropriate support channels.
+
+Error Handling:
+---------------
+- 429/ResourceExhausted: Exponential backoff retry (max 3 attempts)
+- Generic errors: Gracefully return error message to user
+- Rate limiting: User-friendly timeout messages
+
+Author: BankAssist Team
+"""
+
 import os
 import time
 import google.generativeai as genai

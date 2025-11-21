@@ -1,3 +1,37 @@
+"""
+BankAssist Enterprise - Intelligent Email Resolution System
+============================================================
+
+A production-ready multi-agent system built with Google Gemini Flash for automated
+customer support email processing in banking.
+
+Architecture:
+-------------
+- TriageAgent: Routes incoming emails to the correct specialist
+- AccountAgent: Handles account balance, transactions, and statements
+- CardAgent: Manages security issues (lost/stolen cards, fraud)
+- LoanAgent: Processes loan inquiries and credit questions
+- AuditorAgent: Ensures compliance and quality control
+
+Recent Enhancements (Session):
+------------------------------
+✅ Custom Email Input: Users can now enter any email address instead of only preset customers
+✅ LLM Guardrails: All agents reject non-banking questions with polite messages
+✅ Robust Error Handling: Try-except wrapper prevents ValueError on version mismatches
+✅ Evaluation System: ADK-style metrics track routing accuracy, compliance, quality scores
+
+Key Features:
+-------------
+- Real-time agent evaluation dashboard
+- Interactive UI with 4 tabs: Operations, Analytics, Evaluation, System Health
+- Gemini Flash API integration with retry logic
+- SQLite mock database for customer data
+- Comprehensive audit logging
+
+Author: BankAssist Team
+License: MIT
+"""
+
 import streamlit as st
 import time
 import os

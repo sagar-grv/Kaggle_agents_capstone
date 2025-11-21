@@ -1,3 +1,44 @@
+"""
+BankDatabase - Mock Banking System
+===================================
+
+Provides a SQLite-based mock database for customer data simulation.
+This replaces the need for actual bank system integration during development and demo.
+
+Database Schema:
+----------------
+customers table:
+  - email (TEXT, PRIMARY KEY): Customer email address
+  - name (TEXT): Full customer name
+  - account_balance (REAL): Current account balance
+  - card_status (TEXT): 'ACTIVE' or 'BLOCKED'
+  - risk_score (INTEGER): Security risk score (1-10)
+
+transactions table:
+  - id (INTEGER PRIMARY KEY)
+  - customer_email (TEXT): Foreign key to customers
+  - amount (REAL): Transaction amount
+  - description (TEXT): Transaction description
+  - timestamp (TEXT): Transaction datetime
+
+Pre-seeded Customers:
+---------------------
+- alice@example.com: Balance $12,450.50
+- bob@example.com: Balance $3,201.75
+- charlie@example.com: Balance $98,200.00
+
+Available Methods:
+------------------
+- get_customer_by_email(email): Retrieve customer record
+- get_balance(email): Get account balance
+- get_recent_transactions(email, limit=5): Get transaction history
+- get_card_status(email): Check if card is ACTIVE/BLOCKED
+- block_card(email): Block customer's card for security
+- close(): Properly close database connection
+
+Author: BankAssist Team
+"""
+
 import sqlite3
 import random
 from datetime import datetime, timedelta
