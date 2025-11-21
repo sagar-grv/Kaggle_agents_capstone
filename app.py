@@ -62,86 +62,52 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Sidebar: Configuration and Team Info
+# Sidebar: Configuration
 with st.sidebar:
-    st.header("🔧 Configuration")
+    st.header("🔧 API Configuration")
     
-    # API Key Setup with Instructions
-    with st.expander("📖 How to Get Your API Key", expanded=False):
+    # Compact API Key Instructions
+    with st.expander("ℹ️ Need an API Key?", expanded=False):
         st.markdown("""
-        **Quick Setup (2 minutes):**
-        
-        1. 🌐 Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
-        2. 🔑 Click "Create API Key"
-        3. 📋 Copy your key
-        4. 📥 Paste it below
-        
-        💡 **Tip:** Keep your API key secure and never share it publicly!
+        1. Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
+        2. Click "Create API Key"
+        3. Copy and paste below
         """)
     
     api_key = st.text_input(
-        "Google Gemini API Key", 
+        "Gemini API Key", 
         type="password", 
-        placeholder="Paste your API key here...",
-        help="Enter your Gemini API Key. Click the guide above if you need help getting one."
+        placeholder="Paste your API key here..."
     )
     
     if api_key:
         configure_genai(api_key)
-        st.success("✅ API Key Configured Successfully!")
-        st.info("🚀 You're all set! Try processing an email below.")
+        st.success("✅ API Key Active")
     elif os.environ.get("GOOGLE_API_KEY"):
-        st.success("✅ API Key detected from Environment")
+        st.success("✅ API Key Active")
     else:
-        st.warning("⚠️ Please add your API Key above to get started.")
+        st.info("👆 Add your API key to get started")
     
     st.divider()
     
-    # Team Information
-    st.header("👥 About the Team")
-    st.markdown("""
-    **🏆 Kaggle Agents Intensive - Capstone Project**
-    
-    **Team:** Agens  
-    **Track:** Enterprise Agents
-    
-    **Team Members:**
-    - **SagarGrv** - Team Leader & Lead Developer
-    - **Rhythm Mantri** - Core Developer
-    
-    ---
-    
-    **Project:** BankAssist  
-    **Purpose:** Intelligent Email Resolution System for Banking
-    
-    Built with ❤️ using Google Gemini Flash
-    """)
-    
-    st.divider()
-    
-    # Quick Stats
-    st.caption("💡 **Quick Tips:**")
-    st.caption("• Start with preset customers to explore")
-    st.caption("• Try custom email for advanced testing")
-    st.caption("• Check Evaluation tab for AI metrics")
+    # Collapsed Team Info
+    with st.expander("👥 About Team Agens"):
+        st.markdown("""
+        **Kaggle Agents Capstone**
+        
+        **Team Members:**
+        - SagarGrv (Lead)
+        - Rhythm Mantri
+        
+        Enterprise Agents Track
+        """)
 
-st.title("🏦 BankAssist: Intelligent Email Resolution")
-st.markdown("### Enterprise-Grade Multi-Agent System")
 
-# Welcome message for new users
-with st.container(border=True):
-    st.markdown("""
-    👋 **Welcome to BankAssist!** This AI-powered system uses specialized agents to automatically process 
-    and resolve customer support emails with enterprise-grade accuracy.
-    
-    **✨ Key Features:**
-    - 🤖 **5 Specialized AI Agents** (Triage, Account, Card, Loan, Auditor)
-    - 📊 **Real-time Evaluation Metrics** (Routing accuracy, Quality scores, Compliance)
-    - 🔒 **LLM Guardrails** (Banking-only responses)
-    - ⚡ **Lightning Fast** (2-3 second response time)
-    
-    **🚀 Quick Start:** Select a customer, type an email query (e.g., "I lost my card!"), and click Process Email.
-    """)
+st.title("🏦 BankAssist")
+st.caption("AI-Powered Email Resolution for Banking | Team Agens")
+
+st.divider()
+
 
 
 # Initialize Workflow
