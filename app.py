@@ -250,9 +250,15 @@ with tab1:
 
             
             if st.button("Process Email"):
-                with st.spinner("Agents are working..."):
+                # Progress indicator with real-time steps
+                import time
+                with st.status("🔄 Processing email...", expanded=True) as status:
+                    status.write("🔍 Triage Agent analyzing query...")
+                    time.sleep(0.4)
+                    
                     # Handle both old and new workflow versions
                     try:
+                        status.write("📧 Routing to specialist agent...")
                         response, logs, eval_metrics = st.session_state.workflow.process_email(email_content, email_sender)
                     except ValueError:
                         # Old workflow - force upgrade
@@ -261,15 +267,32 @@ with tab1:
                         st.session_state.workflow_version = "2.0"
                         response, logs, eval_metrics = st.session_state.workflow.process_email(email_content, email_sender)
                     
+                    status.write("✅ Response generated!")
+                    status.update(label="✅ Processing complete!", state="complete")
+                    
                     st.session_state.last_response = response
                     st.session_state.last_logs = logs
                     st.session_state.last_eval = eval_metrics
                     
-                    # Determine Agent for Metrics
+                    # Determine Agent for Metrics with icons
                     agent_used = "Unknown"
-                    if "CardAgent" in str(logs): agent_used = "CardAgent"
-                    elif "AccountAgent" in str(logs): agent_used = "AccountAgent"
-                    elif "LoanAgent" in str(logs): agent_used = "LoanAgent"
+                    agent_icon = "🤖"
+                    agent_name = "Unknown"
+                    if "CardAgent" in str(logs):
+                        agent_used = "CardAgent"
+                        agent_icon = "💳"
+                        agent_name = "Card Security"
+                    elif "AccountAgent" in str(logs):
+                        agent_used = "AccountAgent"
+                        agent_icon = "👤"
+                        agent_name = "Account Manager"
+                    elif "LoanAgent" in str(logs):
+                        agent_used = "LoanAgent"
+                        agent_icon = "🏠"
+                        agent_name = "Loan Specialist"
+                    
+                    st.session_state.last_agent_icon = agent_icon
+                    st.session_state.last_agent_name = agent_name
                     
                     st.session_state.history.append({
                         "sender": email_sender,
@@ -285,6 +308,10 @@ with tab1:
     with col_right:
         st.subheader("Agent Resolution")
         if "last_response" in st.session_state:
+            # Agent Activity Timeline
+            if 'last_agent_name' in st.session_state:
+                st.info(f"{st.session_state.last_agent_icon} **Handled by:** {st.session_state.last_agent_name}")
+            
             # Response Display
             with st.container(border=True):
                 st.success("✅ Response Generated Successfully")
