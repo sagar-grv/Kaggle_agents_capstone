@@ -3,7 +3,11 @@
 ## 🏆 Kaggle Agents Intensive - Capstone Project
 
 **Track:** Enterprise Agents  
-**Team:** [Your Name/Team Name]
+**Team Name:** Agens
+**Members:**
+
+- **SagarGrv** (Team Leader)
+- **Rhythm Mantri** (Member)
 
 ---
 
