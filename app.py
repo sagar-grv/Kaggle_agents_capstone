@@ -40,24 +40,124 @@ from agents import configure_genai
 
 st.set_page_config(page_title="BankAssist Enterprise", page_icon="🏦", layout="wide")
 
-# Custom CSS for "Billion Dollar" Look
+# Custom CSS for Professional Animations and Interactions
 st.markdown("""
 <style>
+    /* Smooth fade-in animation for main content */
     .main {
         background-color: #f5f7f9;
+        animation: fadeIn 0.5s ease-in;
     }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Enhanced button with hover animation */
     .stButton>button {
         width: 100%;
-        background-color: #0052cc;
+        background: linear-gradient(135deg, #0052cc 0%, #0066ff 100%);
         color: white;
-        border-radius: 5px;
+        border-radius: 8px;
+        border: none;
+        padding: 12px 24px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 82, 204, 0.2);
     }
-    .metric-card {
+    
+    .stButton>button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 82, 204, 0.3);
+        background: linear-gradient(135deg, #0066ff 0%, #0052cc 100%);
+    }
+    
+    .stButton>button:active {
+        transform: translateY(0);
+    }
+    
+    /* Animated metric cards */
+    .stMetric {
         background-color: white;
-        padding: 20px;
+        padding: 16px;
         border-radius: 10px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        text-align: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+    }
+    
+    .stMetric:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+    }
+    
+    /* Pulse animation for success messages */
+    .stSuccess {
+        animation: pulse 2s ease-in-out;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.8; }
+    }
+    
+    /* Smooth container transitions */
+    .element-container {
+        transition: all 0.2s ease;
+    }
+    
+    /* Animated expander */
+    .streamlit-expanderHeader {
+        transition: all 0.2s ease;
+        border-radius: 8px;
+    }
+    
+    .streamlit-expanderHeader:hover {
+        background-color: rgba(0, 82, 204, 0.05);
+    }
+    
+    /* Tab animation */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 8px;
+    }
+    
+    .stTabs [data-baseweb="tab"] {
+        transition: all 0.3s ease;
+        border-radius: 8px 8px 0 0;
+    }
+    
+    .stTabs [data-baseweb="tab"]:hover {
+        background-color: rgba(0, 82, 204, 0.1);
+    }
+    
+    /* Smooth text input focus */
+    .stTextInput input {
+        transition: all 0.3s ease;
+    }
+    
+    .stTextInput input:focus {
+        border-color: #0052cc;
+        box-shadow: 0 0 0 3px rgba(0, 82, 204, 0.1);
+    }
+    
+    /* Loading spinner enhancement */
+    .stSpinner > div {
+        border-color: #0052cc !important;
+    }
+    
+    /* Divider with gradient */
+    hr {
+        background: linear-gradient(90deg, transparent, #0052cc, transparent);
+        height: 2px;
+        border: none;
+        margin: 24px 0;
+        animation: shimmer 2s infinite;
+    }
+    
+    @keyframes shimmer {
+        0% { opacity: 0.5; }
+        50% { opacity: 1; }
+        100% { opacity: 0.5; }
     }
 </style>
 """, unsafe_allow_html=True)
