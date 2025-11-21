@@ -119,9 +119,9 @@ with tab1:
                         "content": email_content,
                         "agent": agent_used,
                         "response": response[:50] + "...",
-                        "time": f"{eval_metrics['duration']:.2f}s",
-                        "quality_score": eval_metrics['quality_score'],
-                        "routing_correct": eval_metrics['routing']['is_correct']
+                        "time": f"{eval_metrics.get('duration', 0):.2f}s",
+                        "quality_score": eval_metrics.get('quality_score', 0),
+                        "routing_correct": eval_metrics.get('routing', {}).get('is_correct', False)
                     })
                     st.rerun()
 
