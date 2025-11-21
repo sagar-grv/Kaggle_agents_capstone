@@ -48,11 +48,14 @@ st.markdown("### Enterprise-Grade Multi-Agent System")
 if "workflow" not in st.session_state:
     st.session_state.workflow = BankWorkflow()
     st.session_state.history = []
+    st.session_state.workflow_version = "2.0"  # Track version
 
-# Fix for old session state: Reinitialize if evaluator is missing
-if not hasattr(st.session_state.workflow, 'evaluator'):
+# Fix for old session state: Reinitialize if evaluator is missing OR version mismatch
+if (not hasattr(st.session_state.workflow, 'evaluator') or 
+    st.session_state.get('workflow_version', '1.0') != '2.0'):
     st.session_state.workflow = BankWorkflow()
-    st.info("🔄 Workflow reinitialized with evaluation system")
+    st.session_state.workflow_version = "2.0"
+    st.info("🔄 Workflow upgraded to version 2.0 with evaluation system")
 
 # Top Metrics Bar
 total_emails = len(st.session_state.history)
