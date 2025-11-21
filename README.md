@@ -31,8 +31,41 @@ BankAssist uses a **Hub-and-Spoke** architecture with specialized agents:
 1. **Triage Agent:** Routes emails to the right specialist
 2. **Account Agent:** Handles balance inquiries and transactions
 3. **Card Agent:** Manages lost cards and fraud alerts
-4. **Auditor Agent:** Ensures compliance before sending responses
-5. **Loan Agent:** Processes loan inquiries and applications
+4. **Loan Agent:** Processes loan inquiries and applications
+5. **Auditor Agent:** Ensures compliance before sending responses
+
+---
+
+## ✨ Recent Enhancements
+
+### Custom Email Input
+
+Users can now enter any email address instead of selecting from preset customers only. Select "📝 Custom Email" from the dropdown to test with any email ID.
+
+### LLM Guardrails
+
+All agents now reject non-banking questions with polite messages:
+
+- **AccountAgent:** Only answers banking services questions
+- **CardAgent:** Only handles card security matters
+- **LoanAgent:** Only processes loan/credit inquiries
+- Off-topic questions (weather, sports, etc.) receive appropriate redirection
+
+### Robust Error Handling
+
+- Try-except wrapper prevents crashes from version mismatches
+- Defensive key access prevents KeyError exceptions
+- Automatic workflow version upgrades
+
+### ADK-Style Evaluation System
+
+Comprehensive evaluation metrics inspired by Google's Agents Development Kit:
+
+- **Routing Accuracy:** Tracks correct agent assignment
+- **Response Quality Score:** 0-100 based on tone, structure, content
+- **Compliance Rate:** Auditor approval tracking
+- **Latency Monitoring:** Per-agent performance metrics
+- **Interactive Dashboard:** Real-time KPI visualization
 
 ---
 
@@ -53,16 +86,22 @@ BankAssist uses a **Hub-and-Spoke** architecture with specialized agents:
 
 - **Logging:** Real-time agent decision logs in UI
 - **Tracing:** Full workflow visibility (Triage → Worker → Auditor)
-- **Metrics:** Processing time, compliance score, cost savings
+- **Metrics:** Routing accuracy, compliance rate, quality scores, latency
 
 ### ✅ Bonus Points
 
 - **Gemini Integration:** Uses `gemini-flash-latest` for response generation
-- **Professional UI:** Streamlit dashboard with metrics and logs
+- **Professional UI:** Streamlit dashboard with 4 tabs (Operations, Analytics, Evaluation, System Health)
+- **Evaluation Dashboard:** ADK-style metrics with interactive charts
 
 ---
 
 ## 🚀 Quick Start
+
+### Prerequisites
+
+- Python 3.10+
+- Google Gemini API Key ([Get one here](https://makersuite.google.com/app/apikey))
 
 ### Installation
 
@@ -79,13 +118,24 @@ pip install -r requirements.txt
 
 ```bash
 # Set your Gemini API Key
-export GOOGLE_API_KEY="your_api_key_here"
+export GOOGLE_API_KEY="your_api_key_here"  # Mac/Linux
+# OR
+$env:GOOGLE_API_KEY="your_api_key_here"    # Windows PowerShell
 
 # Launch the Streamlit app
 streamlit run app.py
 ```
 
 Alternatively, you can enter your API key directly in the sidebar when the app launches.
+
+### Usage
+
+1. Open `http://localhost:8501` in your browser
+2. Enter your Gemini API key in the sidebar (if not set in environment)
+3. Select a customer or choose "📝 Custom Email" to enter your own
+4. Type an email query (e.g., "I lost my card!")
+5. Click "Process Email"
+6. View the AI-generated response, agent logs, and evaluation metrics
 
 ### Running Tests
 
@@ -113,7 +163,8 @@ graph TD
     D --> F
     E --> F
 
-    F --> G[Final Response]
+    F --> G[Evaluation System]
+    G --> H[Final Response]
 
     subgraph Specialized Agents
         C
@@ -127,43 +178,9 @@ graph TD
     style D fill:#ccf,stroke:#333,stroke-width:2px
     style E fill:#ccf,stroke:#333,stroke-width:2px
     style F fill:#fbc,stroke:#333,stroke-width:2px
-    style G fill:#cfc,stroke:#333,stroke-width:2px
+    style G fill:#cff,stroke:#333,stroke-width:2px
+    style H fill:#cfc,stroke:#333,stroke-width:2px
 ```
-
----
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- Python 3.10+
-- Google Gemini API Key
-
-### Installation
-
-```bash
-# Clone the repository
-git clone [your-repo-url]
-cd agents_capstone
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Set your API key
-$env:GOOGLE_API_KEY="your_api_key_here"
-
-# Run the app
-streamlit run app.py
-```
-
-### Usage
-
-1. Open `http://localhost:8501` in your browser
-2. Enter your Gemini API key in the sidebar (or set it in environment)
-3. Select a customer (<alice@example.com>, <bob@example.com>, <charlie@example.com>)
-4. Type an email query (e.g., "I lost my card!")
-5. Click "Process Email"
-6. View the AI-generated response and agent logs
 
 ---
 
@@ -185,6 +202,7 @@ All 6 comprehensive test scenarios **PASSED**:
 - Routing Accuracy: 100%
 - Compliance Pass Rate: 100%
 - Avg Response Time: 2-3 seconds
+- Quality Scores: 70-95/100
 
 See `TEST_RESULTS.md` for detailed test logs.
 
@@ -194,15 +212,18 @@ See `TEST_RESULTS.md` for detailed test logs.
 
 ```
 agents_capstone/
-├── app.py                  # Streamlit UI
-├── agents.py               # Agent definitions (Triage, Account, Card, Loan, Auditor)
-├── workflow.py             # Orchestration logic
-├── bank_system.py          # Database layer (SQLite)
-├── bankassist.db           # Mock customer data
-├── test_bankassist.py      # Comprehensive test suite
+├── app.py                  # Streamlit UI with evaluation dashboard
+├── agents.py               # Agent definitions with LLM guardrails
+├── workflow.py             # Orchestration logic with evaluation
+├── evaluation.py           # ADK-style metrics tracking
+├── bank_system.py          # SQLite database layer
 ├── requirements.txt        # Python dependencies
+├── tests/
+│   └── test_end_to_end.py  # Comprehensive test suite
 ├── README.md               # This file
-└── TEST_RESULTS.md         # Test execution report
+├── TEST_RESULTS.md         # Test execution report
+├── TESTING_GUIDE.md        # Extreme testing scenarios
+└── DEPLOYMENT.md           # Production deployment guide
 ```
 
 ---
@@ -217,8 +238,9 @@ agents_capstone/
 2. Architecture Overview (0:30-1:00)
 3. Live Demo (1:00-2:30)
    - Balance inquiry
-   - Lost card report
-   - Agent logs explanation
+   - Lost card report with custom email
+   - Agent logs and evaluation metrics
+   - LLM guardrails demonstration
 4. Value Proposition (2:30-3:00)
 
 ---
@@ -234,8 +256,9 @@ agents_capstone/
 ### Efficiency Gains
 
 - **Response Time:** 24 hours → 3 seconds (99.99% faster)
-- **Accuracy:** 85% → 100% (perfect routing)
-- **Compliance:** Manual review → Automated checks
+- **Accuracy:** 85% → 100% (perfect routing with evaluation)
+- **Compliance:** Manual review → Automated checks with audit trail
+- **Quality:** Inconsistent → Scored 70-95/100 with metrics
 
 ---
 
@@ -245,7 +268,8 @@ agents_capstone/
 - **LLM:** Google Gemini Flash
 - **Database:** SQLite
 - **UI:** Streamlit
-- **Testing:** Custom test suite
+- **Evaluation:** Custom ADK-inspired metrics
+- **Testing:** Comprehensive test suite with 6 scenarios
 
 ---
 
@@ -255,6 +279,16 @@ agents_capstone/
 - **API Key Security:** Never hardcoded, environment variable only
 - **Compliance Layer:** Auditor Agent prevents risky responses
 - **Audit Trail:** All decisions logged for review
+- **LLM Guardrails:** Prevents off-topic responses
+
+---
+
+## 📚 Documentation
+
+- **README.md** (this file): Project overview and quick start
+- **TEST_RESULTS.md**: Detailed test execution logs
+- **TESTING_GUIDE.md**: Extreme testing scenarios and edge cases
+- **DEPLOYMENT.md**: Multi-user deployment and production strategies
 
 ---
 
@@ -264,3 +298,23 @@ agents_capstone/
 2. **Voice Integration:** Process voice messages
 3. **Sentiment Analysis:** Detect angry customers for priority routing
 4. **A/B Testing:** Compare agent performance
+5. **Email Validation:** Validate custom email addresses
+6. **Persistent Analytics:** Store evaluation metrics in database
+
+---
+
+## 📝 License
+
+MIT License - See LICENSE file for details
+
+---
+
+## 🙏 Acknowledgments
+
+- **Google Kaggle** for hosting the Agents Intensive competition
+- **Gemini API Team** for the powerful Flash model
+- **Streamlit** for the excellent UI framework
+
+---
+
+**Built with ❤️ by Team Agens for Kaggle Agents Intensive Capstone**
