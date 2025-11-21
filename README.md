@@ -57,6 +57,12 @@ All agents now reject non-banking questions with polite messages:
 - Defensive key access prevents KeyError exceptions
 - Automatic workflow version upgrades
 
+### Interactive UI Enhancements
+
+- **Quick Example Buttons:** One-click sample queries (Balance, Lost Card, Loan) for instant testing
+- **Progress Indicators:** Real-time visualization of the agent workflow (Triage → Routing → Execution)
+- **Agent Activity Timeline:** Visual attribution showing exactly which specialist agent handled the request
+
 ### ADK-Style Evaluation System
 
 Comprehensive evaluation metrics inspired by Google's Agents Development Kit:

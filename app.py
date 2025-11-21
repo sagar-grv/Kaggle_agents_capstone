@@ -348,8 +348,9 @@ with tab2:
         
         # Agent Distribution
         st.markdown("### 📊 Traffic Distribution by Agent")
-        agent_counts = df['agent'].value_counts()
-        st.bar_chart(agent_counts)
+        agent_counts = df['agent'].value_counts().reset_index()
+        agent_counts.columns = ['Agent', 'Count']
+        st.bar_chart(agent_counts.set_index('Agent'))
         
         # Detailed Log Table
         st.markdown("### 📝 Detailed Interaction Log")
