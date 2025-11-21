@@ -38,217 +38,45 @@ import os
 from workflow import BankWorkflow
 from agents import configure_genai
 
-st.set_page_config(
-    page_title="BankAssist Enterprise", 
-    page_icon="🏦", 
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
+st.set_page_config(page_title="BankAssist Enterprise", page_icon="🏦", layout="wide")
 
-# Custom CSS for Professional Animations and Interactions
+# Custom CSS for "Billion Dollar" Look
 st.markdown("""
 <style>
-    /* Force light theme and override dark mode */
-    .stApp {
-        background-color: #f5f7f9 !important;
-    }
-    
-    [data-testid="stAppViewContainer"] {
-        background-color: #f5f7f9 !important;
-    }
-    
-    [data-testid="stHeader"] {
-        background-color: transparent !important;
-    }
-    
-    [data-testid="stToolbar"] {
-        background-color: transparent !important;
-    }
-    
-    /* Ensure all text is dark on light background */
-    .main {
-        background-color: #f5f7f9 !important;
-        color: #1f1f1f !important;
-    }
-    
-    /* Fix sidebar in light mode */
-    [data-testid="stSidebar"] {
-        background-color: #ffffff !important;
-    }
-    
-    [data-testid="stSidebar"] .stMarkdown {
-        color: #1f1f1f !important;
-    }
-    
-    /* Smooth fade-in animation for main content */
     .main {
         background-color: #f5f7f9;
-        animation: fadeIn 0.5s ease-in;
     }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    /* Enhanced button with hover animation */
     .stButton>button {
         width: 100%;
-        background: linear-gradient(135deg, #0052cc 0%, #0066ff 100%);
-        color: white !important;
-        border-radius: 8px;
-        border: none;
-        padding: 12px 24px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 6px rgba(0, 82, 204, 0.2);
+        background-color: #0052cc;
+        color: white;
+        border-radius: 5px;
     }
-    
-    .stButton>button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(0, 82, 204, 0.3);
-        background: linear-gradient(135deg, #0066ff 0%, #0052cc 100%);
-        color: white !important;
-    }
-    
-    .stButton>button:active {
-        transform: translateY(0);
-        color: white !important;
-    }
-
-    
-    /* Animated metric cards */
-    .stMetric {
+    .metric-card {
         background-color: white;
-        padding: 16px;
+        padding: 20px;
         border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        transition: all 0.3s ease;
-    }
-    
-    .stMetric:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 16px rgba(0,0,0,0.12);
-    }
-    
-    /* Pulse animation for success messages */
-    .stSuccess {
-        animation: pulse 2s ease-in-out;
-    }
-    
-    @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.8; }
-    }
-    
-    /* Smooth container transitions */
-    .element-container {
-        transition: all 0.2s ease;
-    }
-    
-    /* Animated expander */
-    .streamlit-expanderHeader {
-        transition: all 0.2s ease;
-        border-radius: 8px;
-    }
-    
-    .streamlit-expanderHeader:hover {
-        background-color: rgba(0, 82, 204, 0.05);
-    }
-    
-    /* Tab animation */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
-    }
-    
-    .stTabs [data-baseweb="tab"] {
-        transition: all 0.3s ease;
-        border-radius: 8px 8px 0 0;
-    }
-    
-    .stTabs [data-baseweb="tab"]:hover {
-        background-color: rgba(0, 82, 204, 0.1);
-    }
-    
-    /* Smooth text input focus */
-    .stTextInput input {
-        transition: all 0.3s ease;
-    }
-    
-    .stTextInput input:focus {
-        border-color: #0052cc;
-        box-shadow: 0 0 0 3px rgba(0, 82, 204, 0.1);
-    }
-    
-    /* Loading spinner enhancement */
-    .stSpinner > div {
-        border-color: #0052cc !important;
-    }
-    
-    /* Divider with gradient */
-    hr {
-        background: linear-gradient(90deg, transparent, #0052cc, transparent);
-        height: 2px;
-        border: none;
-        margin: 24px 0;
-        animation: shimmer 2s infinite;
-    }
-    
-    @keyframes shimmer {
-        0% { opacity: 0.5; }
-        50% { opacity: 1; }
-        100% { opacity: 0.5; }
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        text-align: center;
     }
 </style>
 """, unsafe_allow_html=True)
 
 # Sidebar: Configuration
 with st.sidebar:
-    st.header("🔧 API Configuration")
-    
-    # Compact API Key Instructions
-    with st.expander("ℹ️ Need an API Key?", expanded=False):
-        st.markdown("""
-        1. Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
-        2. Click "Create API Key"
-        3. Copy and paste below
-        """)
-    
-    api_key = st.text_input(
-        "Gemini API Key", 
-        type="password", 
-        placeholder="Paste your API key here..."
-    )
+    st.header("🔧 Configuration")
+    api_key = st.text_input("Google API Key", type="password", help="Enter your Gemini API Key here.")
     
     if api_key:
         configure_genai(api_key)
-        st.success("✅ API Key Active")
+        st.success("API Key Configured!")
     elif os.environ.get("GOOGLE_API_KEY"):
-        st.success("✅ API Key Active")
+        st.success("API Key detected from Environment")
     else:
-        st.info("👆 Add your API key to get started")
-    
-    st.divider()
-    
-    # Collapsed Team Info
-    with st.expander("👥 About Team Agens"):
-        st.markdown("""
-        **Kaggle Agents Capstone**
-        
-        **Team Members:**
-        - SagarGrv (Lead)
-        - Rhythm Mantri
-        
-        Enterprise Agents Track
-        """)
+        st.warning("⚠️ No API Key found. Agents may fail.")
 
-
-st.title("🏦 BankAssist")
-st.caption("AI-Powered Email Resolution for Banking | Team Agens")
-
-st.divider()
-
-
+st.title("🏦 BankAssist: Intelligent Email Resolution")
+st.markdown("### Enterprise-Grade Multi-Agent System")
 
 # Initialize Workflow
 if "workflow" not in st.session_state:
