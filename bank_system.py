@@ -81,8 +81,53 @@ class BankDatabase:
                 date TEXT,
                 amount REAL,
                 merchant TEXT,
-                category TEXT,
+                FOREIGN KEY(account_id) REFERENCES accounts(account_id)
+            )
+        ''')
 
+        # Cards Table
+        self.cursor.execute('''
+            CREATE TABLE IF NOT EXISTS cards (
+                card_id TEXT PRIMARY KEY,
+                customer_id TEXT,
+                status TEXT, -- 'ACTIVE', 'BLOCKED'
+                limit_amount REAL,
+                FOREIGN KEY(customer_id) REFERENCES customers(customer_id)
+            )
+        ''')
+
+        # Audit Logs Table (Global Monitoring)
+        self.cursor.execute('''
+            CREATE TABLE IF NOT EXISTS audit_logs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp TEXT,
+                user_email TEXT,
+                query TEXT,
+                agent_used TEXT,
+                response TEXT,
+                feedback TEXT
+            )
+        ''')
+        self.conn.commit()
+
+    def log_event(self, user_email, query, agent_used, response, feedback=None):
+        """Log a system event for audit purposes."""
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.cursor.execute('''
+            INSERT INTO audit_logs (timestamp, user_email, query, agent_used, response, feedback)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ''', (timestamp, user_email, query, agent_used, response, feedback))
+        self.conn.commit()
+
+    def get_all_logs(self):
+        """Retrieve all audit logs for admin dashboard."""
+        self.cursor.execute('SELECT * FROM audit_logs ORDER BY timestamp DESC')
+        columns = [description[0] for description in self.cursor.description]
+        return [dict(zip(columns, row)) for row in self.cursor.fetchall()]
+
+        return [dict(zip(columns, row)) for row in self.cursor.fetchall()]
+
+    def _seed_data(self):
         print("Seeding mock data...")
         
         # Mock Customers
