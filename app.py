@@ -127,6 +127,18 @@ st.markdown("""
 # Sidebar: Configuration
 with st.sidebar:
     st.header("🔧 Configuration")
+    
+    # How to Get API Key
+    with st.expander("ℹ️ How to Get API Key"):
+        st.markdown("""
+        **Quick Setup (2 minutes):**
+        
+        1. Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
+        2. Click "Create API Key"
+        3. Copy your key
+        4. Paste it below
+        """)
+    
     api_key = st.text_input("Google API Key", type="password", help="Enter your Gemini API Key here.")
     
     if api_key:
