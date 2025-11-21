@@ -97,6 +97,11 @@ class TriageAgent(Agent):
         # Clean the response to ensure we just get the agent name
         response = self.think(prompt).strip()
         
+        # Handle System Errors (API failure, Rate Limit) by defaulting to AccountAgent
+        # This ensures the user sees the actual error from the agent, not a generic "refusal"
+        if response.startswith("System Error") or response.startswith("System Notice"):
+            return "AccountAgent"
+        
         # Fallback safety if LLM is chatty
         if "CardAgent" in response: return "CardAgent"
         if "LoanAgent" in response: return "LoanAgent"
