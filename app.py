@@ -148,6 +148,16 @@ with st.sidebar:
         st.success("API Key detected from Environment")
     else:
         st.warning("⚠️ No API Key found. Agents may fail.")
+        
+    # Admin Access (Hidden)
+    st.markdown("---")
+    if st.checkbox("Developer Access", key="admin_mode_toggle"):
+        admin_password = st.text_input("Admin Password", type="password")
+        if admin_password == "Sagar123":
+            st.session_state.is_admin = True
+            st.success("🔓 Admin Mode Unlocked")
+        else:
+            st.session_state.is_admin = False
     
     st.divider()
     
@@ -197,7 +207,16 @@ with col4:
     st.metric("Cost Savings", f"${total_emails * 15}")
 
 # Tabs for Professional Layout
-tab1, tab2, tab3, tab4 = st.tabs(["📨 Live Operations", "📊 Analytics & Evaluation", "🎯 Evaluation Dashboard", "⚙️ System Health"])
+tabs_list = ["📨 Live Operations", "📊 Analytics & Evaluation", "🎯 Evaluation Dashboard", "⚙️ System Health"]
+if st.session_state.get("is_admin", False):
+    tabs_list.append("🔐 Admin Dashboard")
+
+tabs = st.tabs(tabs_list)
+
+# Unpack tabs (handle variable number of tabs)
+tab1, tab2, tab3, tab4 = tabs[0], tabs[1], tabs[2], tabs[3]
+if len(tabs) > 4:
+    tab_admin = tabs[4]
 
 with tab1:
     col_left, col_right = st.columns([1, 2])
@@ -303,6 +322,20 @@ with tab1:
                         "quality_score": eval_metrics.get('quality_score', 0),
                         "routing_correct": eval_metrics.get('routing', {}).get('is_correct', False)
                     })
+                    
+                    # Log to Database (Global Audit)
+                    try:
+                        db = BankDatabase()
+                        db.log_event(
+                            user_email=email_sender,
+                            query=email_content,
+                            agent_used=agent_used,
+                            response=response
+                        )
+                        db.close()
+                    except Exception as e:
+                        print(f"Logging failed: {e}")
+                        
                     st.rerun()
 
     with col_right:
@@ -488,3 +521,46 @@ with tab4:
     st.write("- Loan Agent: 🟢 Active")
     st.write("- Auditor Agent: 🟢 Active")
     st.write("- Database Connection: 🟢 Connected")
+
+# Admin Dashboard Content
+if st.session_state.get("is_admin", False) and 'tab_admin' in locals():
+    with tab_admin:
+        st.subheader("🔐 Global Admin Dashboard")
+        st.info("This view shows activity across ALL users (persisted in database).")
+        
+        try:
+            db = BankDatabase()
+            logs = db.get_all_logs()
+            db.close()
+            
+            if logs:
+                import pandas as pd
+                df_logs = pd.DataFrame(logs)
+                
+                # Global Metrics
+                col_a1, col_a2, col_a3 = st.columns(3)
+                with col_a1:
+                    st.metric("Total Global Queries", len(df_logs))
+                with col_a2:
+                    unique_users = df_logs['user_email'].nunique() if 'user_email' in df_logs.columns else 0
+                    st.metric("Unique Users", unique_users)
+                with col_a3:
+                    st.metric("Database Status", "🟢 Online")
+                
+                # Global Activity Feed
+                st.markdown("### 🌍 Global Activity Feed")
+                st.dataframe(df_logs, use_container_width=True)
+                
+                # Export Global Data
+                csv_global = df_logs.to_csv(index=False).encode('utf-8')
+                st.download_button(
+                    "📥 Download Global Audit Log",
+                    csv_global,
+                    "global_audit_log.csv",
+                    "text/csv"
+                )
+            else:
+                st.warning("No global activity recorded yet.")
+                
+        except Exception as e:
+            st.error(f"Failed to load admin data: {e}")

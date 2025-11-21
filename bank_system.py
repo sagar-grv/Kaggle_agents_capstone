@@ -82,27 +82,6 @@ class BankDatabase:
                 amount REAL,
                 merchant TEXT,
                 category TEXT,
-                FOREIGN KEY(account_id) REFERENCES accounts(account_id)
-            )
-        ''')
-
-        # Cards Table
-        self.cursor.execute('''
-            CREATE TABLE IF NOT EXISTS cards (
-                card_id TEXT PRIMARY KEY,
-                customer_id TEXT,
-                status TEXT, -- 'ACTIVE', 'BLOCKED'
-                limit_amount REAL,
-                FOREIGN KEY(customer_id) REFERENCES customers(customer_id)
-            )
-        ''')
-        self.conn.commit()
-
-    def _seed_data(self):
-        # Check if data exists
-        self.cursor.execute("SELECT count(*) FROM customers")
-        if self.cursor.fetchone()[0] > 0:
-            return
 
         print("Seeding mock data...")
         
