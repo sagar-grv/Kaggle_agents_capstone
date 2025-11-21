@@ -136,7 +136,7 @@ class BankDatabase:
             ("CUST002", "Bob Smith", "bob@example.com", "555-0102", 80), # High risk
             ("CUST003", "Charlie Brown", "charlie@example.com", "555-0103", 5)
         ]
-        self.cursor.executemany("INSERT INTO customers VALUES (?,?,?,?,?)", customers)
+        self.cursor.executemany("INSERT OR IGNORE INTO customers VALUES (?,?,?,?,?)", customers)
 
         # Mock Accounts
         accounts = [
@@ -145,7 +145,7 @@ class BankDatabase:
             ("ACC003", "CUST002", "Checking", 200.00),
             ("ACC004", "CUST003", "Checking", 850.00)
         ]
-        self.cursor.executemany("INSERT INTO accounts VALUES (?,?,?,?)", accounts)
+        self.cursor.executemany("INSERT OR IGNORE INTO accounts VALUES (?,?,?,?)", accounts)
 
         # Mock Cards
         cards = [
@@ -153,7 +153,7 @@ class BankDatabase:
             ("CARD002", "CUST002", "BLOCKED", 1000),
             ("CARD003", "CUST003", "ACTIVE", 2000)
         ]
-        self.cursor.executemany("INSERT INTO cards VALUES (?,?,?,?)", cards)
+        self.cursor.executemany("INSERT OR IGNORE INTO cards VALUES (?,?,?,?)", cards)
 
         # Mock Transactions
         transactions = []
@@ -166,7 +166,7 @@ class BankDatabase:
                 cat = "Shopping" if amt < 0 else "Income"
                 transactions.append((t_id, acc_id, date, amt, merch, cat))
         
-        self.cursor.executemany("INSERT INTO transactions VALUES (?,?,?,?,?,?)", transactions)
+        self.cursor.executemany("INSERT OR IGNORE INTO transactions VALUES (?,?,?,?,?,?)", transactions)
         self.conn.commit()
 
     # --- Tools for Agents ---
