@@ -131,3 +131,8 @@ class BankDatabase:
     def get_card_status(self, customer_id):
         self.cursor.execute("SELECT card_id, status FROM cards WHERE customer_id=?", (customer_id,))
         return self.cursor.fetchall()
+
+    def close(self):
+        """Close the database connection."""
+        if self.conn:
+            self.conn.close()

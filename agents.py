@@ -1,4 +1,5 @@
 import os
+import time
 import google.generativeai as genai
 
 def configure_genai(api_key):
@@ -32,7 +33,6 @@ class Agent:
                 error_str = str(e)
                 if "429" in error_str or "ResourceExhausted" in error_str:
                     if attempt < max_retries - 1:
-                        import time
                         sleep_time = base_delay * (2 ** attempt)
                         time.sleep(sleep_time)
                         continue

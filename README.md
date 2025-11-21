@@ -4,6 +4,7 @@
 
 **Track:** Enterprise Agents  
 **Team Name:** Agens
+
 **Members:**
 
 - **SagarGrv** (Team Leader)
@@ -58,6 +59,43 @@ BankAssist uses a **Hub-and-Spoke** architecture with specialized agents:
 
 - **Gemini Integration:** Uses `gemini-flash-latest` for response generation
 - **Professional UI:** Streamlit dashboard with metrics and logs
+
+---
+
+## 🚀 Quick Start
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/sagar-grv/Kaggle_agents_capstone.git
+cd Kaggle_agents_capstone
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### Running the Application
+
+```bash
+# Set your Gemini API Key
+export GOOGLE_API_KEY="your_api_key_here"
+
+# Launch the Streamlit app
+streamlit run app.py
+```
+
+Alternatively, you can enter your API key directly in the sidebar when the app launches.
+
+### Running Tests
+
+```bash
+# Set your API key first
+export GOOGLE_API_KEY="your_api_key_here"
+
+# Run end-to-end tests
+python tests/test_end_to_end.py
+```
 
 ---
 

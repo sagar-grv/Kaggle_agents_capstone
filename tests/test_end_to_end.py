@@ -4,8 +4,10 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import google.generativeai as genai
 
-# Set API Key explicitly for the test process
-# api_key = "YOUR_API_KEY"
+# IMPORTANT: Set your API key before running this test
+# Option 1: Set environment variable GOOGLE_API_KEY
+# Option 2: Uncomment the lines below and add your key
+# api_key = "YOUR_API_KEY_HERE"
 # os.environ["GOOGLE_API_KEY"] = api_key
 # genai.configure(api_key=api_key)
 

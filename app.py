@@ -165,5 +165,6 @@ with tab3:
     st.write("- Triage Agent: 🟢 Active")
     st.write("- Account Agent: 🟢 Active")
     st.write("- Card Agent: 🟢 Active")
+    st.write("- Loan Agent: 🟢 Active")
     st.write("- Auditor Agent: 🟢 Active")
     st.write("- Database Connection: 🟢 Connected")

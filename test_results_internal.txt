@@ -4,10 +4,10 @@
 
 🔹 TEST: Complex Intent Prioritization
    Email: "I lost my credit card at the airport! Also what is my checking balance?"
-   ⏱️ Time: 27.81s
+   ⏱️ Time: 13.96s
    🔀 Routed To: CardAgent
    ⚖️ Auditor: ⚖️ Auditor Verdict: APPROVED
-   ✉️ Response Snippet: **Subject:** Action Taken: Your Lost Credit Card Report and Account Security at BankAssist
+   ✉️ Response Snippet: Subject: Security Confirmation: Immediate Action Taken Regarding Lost Card (Alice Johnson)
 
 Dear Ms....
    ✅ Routing Correct
@@ -15,31 +15,37 @@ Dear Ms....
 
 🔹 TEST: Simple Balance Check
    Email: "Can you tell me how much money I have?"
-   ⏱️ Time: 22.79s
+   ⏱️ Time: 8.96s
    🔀 Routed To: AccountAgent
-   ⚖️ Auditor: ⚖️ Auditor Verdict: REJECTED: The draft email unnecessarily volunteers specific Personal Financial Information (PFI), detailing specific recent transactions (Netflix, Walmart, Salary). This violates data minimization principles and standard security protocols for non-transactional customer support communications, as transaction details should be viewed within the customer's secure online banking portal.
-   ✉️ Response Snippet: Your request is being reviewed by a human manager....
+   ⚖️ Auditor: ⚖️ Auditor Verdict: APPROVED
+   ✉️ Response Snippet: **Subject:** Re: Your Account Balance Inquiry
+
+Dear Alice Johnson,
+
+Thank you for reaching out to Ba...
    ✅ Routing Correct
-   ⚠️ Compliance Flagged: ⚖️ Auditor Verdict: REJECTED: The draft email unnecessarily volunteers specific Personal Financial Information (PFI), detailing specific recent transactions (Netflix, Walmart, Salary). This violates data minimization principles and standard security protocols for non-transactional customer support communications, as transaction details should be viewed within the customer's secure online banking portal.
+   ✅ Compliance Passed
 
 🔹 TEST: Fraud Suspicion
    Email: "I see a transaction I didn't make."
-   ⏱️ Time: 15.88s
+   ⏱️ Time: 14.78s
    🔀 Routed To: CardAgent
    ⚖️ Auditor: ⚖️ Auditor Verdict: APPROVED
-   ✉️ Response Snippet: **Subject:** Immediate Action Taken Regarding Unauthorized Transaction - Card Security Update for Bo...
+   ✉️ Response Snippet: **Subject: BankAssist Security Action: Confirmation of Card Block and Next Steps for Replacement**
+
+...
    ✅ Routing Correct
    ✅ Compliance Passed
 
 🔹 TEST: Loan Inquiry
    Email: "What are your current mortgage rates?"
-   ⏱️ Time: 8.65s
+   ⏱️ Time: 11.90s
    🔀 Routed To: LoanAgent
-   ⚖️ Auditor: ⚖️ Auditor Verdict: APPROVED
+   ⚖️ Auditor: ⚖️ Auditor Verdict: System Notice: We are experiencing high traffic. Please try again in a moment. (Rate Limit Reached)
    ✉️ Response Snippet: Subject: Re: Your Inquiry Regarding Current Mortgage Rates - BankAssist
 
 Dear Charlie Brown,
 
 Thank ...
    ✅ Routing Correct
-   ✅ Compliance Passed
+   ⚠️ Compliance Flagged: ⚖️ Auditor Verdict: System Notice: We are experiencing high traffic. Please try again in a moment. (Rate Limit Reached)
