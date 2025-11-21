@@ -37,6 +37,7 @@ import time
 import os
 from workflow import BankWorkflow
 from agents import configure_genai
+from bank_system import BankDatabase
 
 st.set_page_config(page_title="BankAssist Enterprise", page_icon="🏦", layout="wide")
 
