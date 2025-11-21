@@ -58,7 +58,7 @@ st.markdown("""
     .stButton>button {
         width: 100%;
         background: linear-gradient(135deg, #0052cc 0%, #0066ff 100%);
-        color: white;
+        color: white !important;
         border-radius: 8px;
         border: none;
         padding: 12px 24px;
@@ -71,11 +71,14 @@ st.markdown("""
         transform: translateY(-2px);
         box-shadow: 0 6px 12px rgba(0, 82, 204, 0.3);
         background: linear-gradient(135deg, #0066ff 0%, #0052cc 100%);
+        color: white !important;
     }
     
     .stButton>button:active {
         transform: translateY(0);
+        color: white !important;
     }
+
     
     /* Animated metric cards */
     .stMetric {
