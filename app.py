@@ -40,24 +40,86 @@ from agents import configure_genai
 
 st.set_page_config(page_title="BankAssist Enterprise", page_icon="🏦", layout="wide")
 
-# Custom CSS for "Billion Dollar" Look
+# Custom CSS for Smooth Animations (preserving default colors)
 st.markdown("""
 <style>
-    .main {
-        background-color: #f5f7f9;
+    /* Smooth fade-in animation for content */
+    .main > div {
+        animation: fadeInUp 0.6s ease-out;
     }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Smooth button hover (no color change, just effect) */
     .stButton>button {
-        width: 100%;
-        background-color: #0052cc;
-        color: white;
-        border-radius: 5px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-    .metric-card {
-        background-color: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        text-align: center;
+    
+    .stButton>button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .stButton>button:active {
+        transform: translateY(0);
+    }
+    
+    /* Metric cards hover animation */
+    [data-testid="stMetricValue"] {
+        transition: transform 0.3s ease;
+    }
+    
+    div[data-testid="metric-container"]:hover [data-testid="stMetricValue"] {
+        transform: scale(1.05);
+    }
+    
+    /* Smooth tab transitions */
+    .stTabs [data-baseweb="tab"] {
+        transition: all 0.3s ease;
+    }
+    
+    /* Text input focus animation */
+    .stTextInput input, .stTextArea textarea {
+        transition: box-shadow 0.3s ease;
+    }
+    
+    .stTextInput input:focus, .stTextArea textarea:focus {
+        box-shadow: 0 0 0 2px rgba(19, 104, 206, 0.2);
+    }
+    
+    /* Expander smooth animation */
+    .streamlit-expanderHeader {
+        transition: all 0.2s ease;
+    }
+    
+    /* Container smooth transitions */
+    [data-testid="stVerticalBlock"] > div {
+        transition: opacity 0.3s ease;
+    }
+    
+    /* Success/Info/Warning message animations */
+    .stAlert {
+        animation: slideIn 0.4s ease-out;
+    }
+    
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
     }
 </style>
 """, unsafe_allow_html=True)
