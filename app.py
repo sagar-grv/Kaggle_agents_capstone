@@ -81,7 +81,15 @@ with tab1:
     with col_left:
         st.subheader("Incoming Stream")
         with st.container(border=True):
-            email_sender = st.selectbox("Select Customer", ["alice@example.com", "bob@example.com", "charlie@example.com"])
+            # Customer selection with custom email option
+            customer_option = st.selectbox("Select Customer", 
+                ["alice@example.com", "bob@example.com", "charlie@example.com", "📝 Custom Email"])
+            
+            if customer_option == "📝 Custom Email":
+                email_sender = st.text_input("Enter Email Address", placeholder="example@email.com")
+            else:
+                email_sender = customer_option
+            
             email_content = st.text_area("Email Content", height=150, placeholder="Type your issue here...\ne.g., I lost my card!")
             
             if st.button("Process Email"):
