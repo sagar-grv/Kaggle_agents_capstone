@@ -38,11 +38,48 @@ import os
 from workflow import BankWorkflow
 from agents import configure_genai
 
-st.set_page_config(page_title="BankAssist Enterprise", page_icon="🏦", layout="wide")
+st.set_page_config(
+    page_title="BankAssist Enterprise", 
+    page_icon="🏦", 
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
 # Custom CSS for Professional Animations and Interactions
 st.markdown("""
 <style>
+    /* Force light theme and override dark mode */
+    .stApp {
+        background-color: #f5f7f9 !important;
+    }
+    
+    [data-testid="stAppViewContainer"] {
+        background-color: #f5f7f9 !important;
+    }
+    
+    [data-testid="stHeader"] {
+        background-color: transparent !important;
+    }
+    
+    [data-testid="stToolbar"] {
+        background-color: transparent !important;
+    }
+    
+    /* Ensure all text is dark on light background */
+    .main {
+        background-color: #f5f7f9 !important;
+        color: #1f1f1f !important;
+    }
+    
+    /* Fix sidebar in light mode */
+    [data-testid="stSidebar"] {
+        background-color: #ffffff !important;
+    }
+    
+    [data-testid="stSidebar"] .stMarkdown {
+        color: #1f1f1f !important;
+    }
+    
     /* Smooth fade-in animation for main content */
     .main {
         background-color: #f5f7f9;
