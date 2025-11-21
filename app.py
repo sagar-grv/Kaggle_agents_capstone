@@ -205,6 +205,30 @@ with tab1:
     with col_left:
         st.subheader("Incoming Stream")
         with st.container(border=True):
+            # Quick Example Buttons
+            st.caption("⚡ Try a sample query:")
+            col_btn1, col_btn2, col_btn3 = st.columns(3)
+            
+            with col_btn1:
+                if st.button("📊 Balance"):
+                    st.session_state.sample_query = "What's my current account balance?"
+                    st.session_state.sample_sender = "alice@example.com"
+                    st.rerun()
+            
+            with col_btn2:
+                if st.button("💳 Lost Card"):
+                    st.session_state.sample_query = "I lost my credit card! Please block it immediately."
+                    st.session_state.sample_sender = "bob@example.com"
+                    st.rerun()
+            
+            with col_btn3:
+                if st.button("🏠 Loan Info"):
+                    st.session_state.sample_query = "I want to apply for a home loan. What are the current rates?"
+                    st.session_state.sample_sender = "charlie@example.com"
+                    st.rerun()
+            
+            st.divider()
+            
             # Customer selection with custom email option
             customer_option = st.selectbox("Select Customer", 
                 ["alice@example.com", "bob@example.com", "charlie@example.com", "📝 Custom Email"])
@@ -212,9 +236,18 @@ with tab1:
             if customer_option == "📝 Custom Email":
                 email_sender = st.text_input("Enter Email Address", placeholder="example@email.com")
             else:
-                email_sender = customer_option
+                email_sender = st.session_state.get('sample_sender', customer_option)
             
-            email_content = st.text_area("Email Content", height=150, placeholder="Type your issue here...\ne.g., I lost my card!")
+            email_content = st.text_area("Email Content", height=150, 
+                                        value=st.session_state.get('sample_query', ''),
+                                        placeholder="Type your issue here...\ne.g., I lost my card!")
+            
+            # Clear sample after displaying
+            if 'sample_query' in st.session_state:
+                del st.session_state.sample_query
+            if 'sample_sender' in st.session_state:
+                del st.session_state.sample_sender
+
             
             if st.button("Process Email"):
                 with st.spinner("Agents are working..."):
