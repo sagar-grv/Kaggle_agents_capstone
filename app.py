@@ -86,7 +86,15 @@ with tab1:
             
             if st.button("Process Email"):
                 with st.spinner("Agents are working..."):
-                    response, logs, eval_metrics = st.session_state.workflow.process_email(email_content, email_sender)
+                    # Handle both old and new workflow versions
+                    try:
+                        response, logs, eval_metrics = st.session_state.workflow.process_email(email_content, email_sender)
+                    except ValueError:
+                        # Old workflow - force upgrade
+                        st.warning("⚠️ Upgrading to latest version...")
+                        st.session_state.workflow = BankWorkflow()
+                        st.session_state.workflow_version = "2.0"
+                        response, logs, eval_metrics = st.session_state.workflow.process_email(email_content, email_sender)
                     
                     st.session_state.last_response = response
                     st.session_state.last_logs = logs
