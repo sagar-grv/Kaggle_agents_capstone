@@ -19,13 +19,28 @@ class Agent:
         self.model = genai.GenerativeModel('gemini-flash-latest')
 
     def think(self, prompt):
-        try:
-            response = self.model.generate_content(
-                f"You are a {self.role} at a bank. {prompt}"
-            )
-            return response.text
-        except Exception as e:
-            return f"Error calling Gemini: {str(e)}"
+        max_retries = 3
+        base_delay = 2
+        
+        for attempt in range(max_retries):
+            try:
+                response = self.model.generate_content(
+                    f"You are a {self.role} at a bank. {prompt}"
+                )
+                return response.text
+            except Exception as e:
+                error_str = str(e)
+                if "429" in error_str or "ResourceExhausted" in error_str:
+                    if attempt < max_retries - 1:
+                        import time
+                        sleep_time = base_delay * (2 ** attempt)
+                        time.sleep(sleep_time)
+                        continue
+                    else:
+                        return "System Notice: We are experiencing high traffic. Please try again in a moment. (Rate Limit Reached)"
+                else:
+                    return f"System Error: {error_str}"
+        return "System Error: Unable to generate response."
 
 class TriageAgent(Agent):
     def analyze_email(self, email_content):

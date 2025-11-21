@@ -50,18 +50,22 @@ if "workflow" not in st.session_state:
     st.session_state.history = []
 
 # Top Metrics Bar
+total_emails = len(st.session_state.history)
+avg_time = sum([float(x['time'].replace('s','')) for x in st.session_state.history]) / total_emails if total_emails > 0 else 0
+compliance_rate = "100%" # Placeholder for now, could be calculated if we tracked rejections
+
 col1, col2, col3, col4 = st.columns(4)
 with col1:
-    st.metric("Emails Processed", len(st.session_state.history))
+    st.metric("Emails Processed", total_emails)
 with col2:
-    st.metric("Avg. Resolution Time", "1.2s")
+    st.metric("Avg. Resolution Time", f"{avg_time:.2f}s")
 with col3:
-    st.metric("Compliance Score", "100%")
+    st.metric("Compliance Score", compliance_rate)
 with col4:
-    st.metric("Cost Savings", f"${len(st.session_state.history) * 15}")
+    st.metric("Cost Savings", f"${total_emails * 15}")
 
 # Tabs for Professional Layout
-tab1, tab2, tab3 = st.tabs(["📨 Live Operations", "📊 Analytics", "⚙️ System Health"])
+tab1, tab2, tab3 = st.tabs(["📨 Live Operations", "📊 Analytics & Evaluation", "⚙️ System Health"])
 
 with tab1:
     col_left, col_right = st.columns([1, 2])
@@ -80,12 +84,21 @@ with tab1:
                     
                     st.session_state.last_response = response
                     st.session_state.last_logs = logs
+                    
+                    # Determine Agent for Metrics
+                    agent_used = "Unknown"
+                    if "CardAgent" in str(logs): agent_used = "CardAgent"
+                    elif "AccountAgent" in str(logs): agent_used = "AccountAgent"
+                    elif "LoanAgent" in str(logs): agent_used = "LoanAgent"
+                    
                     st.session_state.history.append({
                         "sender": email_sender,
                         "content": email_content,
-                        "response": response,
+                        "agent": agent_used,
+                        "response": response[:50] + "...",
                         "time": f"{end_time - start_time:.2f}s"
                     })
+                    st.rerun()
 
     with col_right:
         st.subheader("Agent Resolution")
@@ -117,11 +130,34 @@ with tab1:
             st.info("Waiting for incoming emails...")
 
 with tab2:
-    st.subheader("Historical Data")
+    st.subheader("📈 Agent Performance Matrix")
+    
     if st.session_state.history:
-        st.dataframe(st.session_state.history)
+        # Create a DataFrame for the matrix
+        import pandas as pd
+        df = pd.DataFrame(st.session_state.history)
+        
+        # Agent Distribution
+        st.markdown("### 📊 Traffic Distribution by Agent")
+        agent_counts = df['agent'].value_counts()
+        st.bar_chart(agent_counts)
+        
+        # Detailed Log Table
+        st.markdown("### 📝 Detailed Interaction Log")
+        st.dataframe(df, use_container_width=True)
+        
+        # Evaluation Metrics
+        st.markdown("### 🎯 System Evaluation")
+        col_e1, col_e2 = st.columns(2)
+        with col_e1:
+            st.info(f"**Total Interactions:** {len(df)}")
+            st.info(f"**Unique Customers:** {df['sender'].nunique()}")
+        with col_e2:
+            st.success(f"**Success Rate:** 100% (Simulated)")
+            st.success(f"**Avg Latency:** {avg_time:.2f}s")
+            
     else:
-        st.write("No data yet.")
+        st.write("No data available yet. Process some emails to see the evaluation matrix.")
 
 with tab3:
     st.subheader("System Status")
