@@ -49,6 +49,11 @@ if "workflow" not in st.session_state:
     st.session_state.workflow = BankWorkflow()
     st.session_state.history = []
 
+# Fix for old session state: Reinitialize if evaluator is missing
+if not hasattr(st.session_state.workflow, 'evaluator'):
+    st.session_state.workflow = BankWorkflow()
+    st.info("🔄 Workflow reinitialized with evaluation system")
+
 # Top Metrics Bar
 total_emails = len(st.session_state.history)
 avg_time = sum([float(x['time'].replace('s','')) for x in st.session_state.history]) / total_emails if total_emails > 0 else 0
@@ -163,7 +168,9 @@ with tab2:
 with tab3:
     st.subheader("🎯 ADK-Style Agent Evaluation Dashboard")
     
-    if 'workflow' in st.session_state and st.session_state.workflow.evaluator.metrics['total_requests'] > 0:
+    if ('workflow' in st.session_state and 
+        hasattr(st.session_state.workflow, 'evaluator') and 
+        st.session_state.workflow.evaluator.metrics['total_requests'] > 0):
         evaluator = st.session_state.workflow.evaluator
         summary = evaluator.get_summary_metrics()
         
