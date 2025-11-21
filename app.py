@@ -62,21 +62,87 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Sidebar: Configuration
+# Sidebar: Configuration and Team Info
 with st.sidebar:
     st.header("🔧 Configuration")
-    api_key = st.text_input("Google API Key", type="password", help="Enter your Gemini API Key here.")
+    
+    # API Key Setup with Instructions
+    with st.expander("📖 How to Get Your API Key", expanded=False):
+        st.markdown("""
+        **Quick Setup (2 minutes):**
+        
+        1. 🌐 Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
+        2. 🔑 Click "Create API Key"
+        3. 📋 Copy your key
+        4. 📥 Paste it below
+        
+        💡 **Tip:** Keep your API key secure and never share it publicly!
+        """)
+    
+    api_key = st.text_input(
+        "Google Gemini API Key", 
+        type="password", 
+        placeholder="Paste your API key here...",
+        help="Enter your Gemini API Key. Click the guide above if you need help getting one."
+    )
     
     if api_key:
         configure_genai(api_key)
-        st.success("API Key Configured!")
+        st.success("✅ API Key Configured Successfully!")
+        st.info("🚀 You're all set! Try processing an email below.")
     elif os.environ.get("GOOGLE_API_KEY"):
-        st.success("API Key detected from Environment")
+        st.success("✅ API Key detected from Environment")
     else:
-        st.warning("⚠️ No API Key found. Agents may fail.")
+        st.warning("⚠️ Please add your API Key above to get started.")
+    
+    st.divider()
+    
+    # Team Information
+    st.header("👥 About the Team")
+    st.markdown("""
+    **🏆 Kaggle Agents Intensive - Capstone Project**
+    
+    **Team:** Agens  
+    **Track:** Enterprise Agents
+    
+    **Team Members:**
+    - **SagarGrv** - Team Leader & Lead Developer
+    - **Rhythm Mantri** - Core Developer
+    
+    ---
+    
+    **Project:** BankAssist  
+    **Purpose:** Intelligent Email Resolution System for Banking
+    
+    Built with ❤️ using Google Gemini Flash
+    """)
+    
+    st.divider()
+    
+    # Quick Stats
+    st.caption("💡 **Quick Tips:**")
+    st.caption("• Start with preset customers to explore")
+    st.caption("• Try custom email for advanced testing")
+    st.caption("• Check Evaluation tab for AI metrics")
 
 st.title("🏦 BankAssist: Intelligent Email Resolution")
 st.markdown("### Enterprise-Grade Multi-Agent System")
+
+# Welcome message for new users
+with st.container(border=True):
+    st.markdown("""
+    👋 **Welcome to BankAssist!** This AI-powered system uses specialized agents to automatically process 
+    and resolve customer support emails with enterprise-grade accuracy.
+    
+    **✨ Key Features:**
+    - 🤖 **5 Specialized AI Agents** (Triage, Account, Card, Loan, Auditor)
+    - 📊 **Real-time Evaluation Metrics** (Routing accuracy, Quality scores, Compliance)
+    - 🔒 **LLM Guardrails** (Banking-only responses)
+    - ⚡ **Lightning Fast** (2-3 second response time)
+    
+    **🚀 Quick Start:** Select a customer, type an email query (e.g., "I lost my card!"), and click Process Email.
+    """)
+
 
 # Initialize Workflow
 if "workflow" not in st.session_state:
