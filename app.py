@@ -65,7 +65,7 @@ with col4:
     st.metric("Cost Savings", f"${total_emails * 15}")
 
 # Tabs for Professional Layout
-tab1, tab2, tab3 = st.tabs(["📨 Live Operations", "📊 Analytics & Evaluation", "⚙️ System Health"])
+tab1, tab2, tab3, tab4 = st.tabs(["📨 Live Operations", "📊 Analytics & Evaluation", "🎯 Evaluation Dashboard", "⚙️ System Health"])
 
 with tab1:
     col_left, col_right = st.columns([1, 2])
@@ -78,12 +78,11 @@ with tab1:
             
             if st.button("Process Email"):
                 with st.spinner("Agents are working..."):
-                    start_time = time.time()
-                    response, logs = st.session_state.workflow.process_email(email_content, email_sender)
-                    end_time = time.time()
+                    response, logs, eval_metrics = st.session_state.workflow.process_email(email_content, email_sender)
                     
                     st.session_state.last_response = response
                     st.session_state.last_logs = logs
+                    st.session_state.last_eval = eval_metrics
                     
                     # Determine Agent for Metrics
                     agent_used = "Unknown"
@@ -96,7 +95,9 @@ with tab1:
                         "content": email_content,
                         "agent": agent_used,
                         "response": response[:50] + "...",
-                        "time": f"{end_time - start_time:.2f}s"
+                        "time": f"{eval_metrics['duration']:.2f}s",
+                        "quality_score": eval_metrics['quality_score'],
+                        "routing_correct": eval_metrics['routing']['is_correct']
                     })
                     st.rerun()
 
@@ -160,6 +161,114 @@ with tab2:
         st.write("No data available yet. Process some emails to see the evaluation matrix.")
 
 with tab3:
+    st.subheader("🎯 ADK-Style Agent Evaluation Dashboard")
+    
+    if 'workflow' in st.session_state and st.session_state.workflow.evaluator.metrics['total_requests'] > 0:
+        evaluator = st.session_state.workflow.evaluator
+        summary = evaluator.get_summary_metrics()
+        
+        # Key Metrics Cards
+        st.markdown("### 📈 Key Performance Indicators")
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            st.metric(
+                "Routing Accuracy",
+                f"{summary['routing_accuracy']}%",
+                delta="+5%" if summary['routing_accuracy'] > 90 else None
+            )
+        
+        with col2:
+            st.metric(
+                "Compliance Rate",
+                f"{summary['compliance_rate']}%",
+                delta="+3%" if summary['compliance_rate'] > 85 else None
+            )
+        
+        with col3:
+            st.metric(
+                "Avg Quality Score",
+                f"{summary['avg_quality_score']}/100",
+                delta="+2" if summary['avg_quality_score'] > 80 else None
+            )
+        
+        with col4:
+            st.metric(
+                "Total Evaluations",
+                summary['total_evaluations']
+            )
+        
+        st.markdown("---")
+        
+        # Interactive Charts
+        st.markdown("### 📊 Performance Visualizations")
+        
+        col_chart1, col_chart2 = st.columns(2)
+        
+        with col_chart1:
+            st.markdown("#### Quality Score Distribution")
+            import pandas as pd
+            if evaluator.metrics['quality_scores']:
+                quality_df = pd.DataFrame({
+                    'Scores': evaluator.metrics['quality_scores']
+                })
+                st.bar_chart(quality_df)
+            else:
+                st.info("No quality scores yet")
+        
+        with col_chart2:
+            st.markdown("#### Response Time Trend")
+            if evaluator.metrics['response_times']:
+                time_df = pd.DataFrame({
+                    'Latency (s)': evaluator.metrics['response_times']
+                })
+                st.line_chart(time_df)
+            else:
+                st.info("No timing data yet")
+        
+        # Agent Performance Breakdown
+        st.markdown("### 🤖 Per-Agent Performance Breakdown")
+        performance_data = evaluator.get_agent_performance_breakdown()
+        
+        if performance_data:
+            perf_df = pd.DataFrame(performance_data)
+            st.dataframe(perf_df, use_container_width=True, hide_index=True)
+        else:
+            st.info("No agent-specific data yet")
+        
+        # Detailed Evaluation Log
+        st.markdown("### 📝 Detailed Evaluation Log")
+        if evaluator.interaction_log:
+            log_df = pd.DataFrame(evaluator.interaction_log)
+            st.dataframe(log_df, use_container_width=True, hide_index=True)
+        else:
+            st.info("No evaluation logs yet")
+        
+        # Export Evaluation Data
+        st.markdown("### 💾 Export Evaluation Data")
+        if st.button("Export to CSV"):
+            if evaluator.interaction_log:
+                export_df = pd.DataFrame(evaluator.interaction_log)
+                csv = export_df.to_csv(index=False)
+                st.download_button(
+                    label="Download CSV",
+                    data=csv,
+                    file_name="agent_evaluation_report.csv",
+                    mime="text/csv"
+                )
+    else:
+        st.info("⏳ Process some emails to see detailed evaluation metrics")
+        
+        st.markdown("""
+        ### What You'll See:
+        - **Routing Accuracy**: % of emails routed to the correct agent
+        - **Compliance Rate**: % of responses approved by Auditor
+        - **Quality Score**: 0-100 score based on response structure, tone, and content
+        - **Per-Agent Performance**: Breakdown of each agent's metrics
+        - **Evaluation Logs**: Detailed interaction history
+        """)
+
+with tab4:
     st.subheader("System Status")
     st.success("All Agents Online")
     st.write("- Triage Agent: 🟢 Active")
