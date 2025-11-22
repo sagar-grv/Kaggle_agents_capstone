@@ -423,7 +423,7 @@ with tab2:
         
         # Detailed Log Table
         st.markdown("### 📝 Detailed Interaction Log")
-        st.dataframe(df, use_container_width=True)
+        st.dataframe(df, width=None)
         
         # Evaluation Metrics
         st.markdown("### 🎯 System Evaluation")
@@ -512,7 +512,7 @@ with tab3:
         
         if performance_data:
             perf_df = pd.DataFrame(performance_data)
-            st.dataframe(perf_df, use_container_width=True, hide_index=True)
+            st.dataframe(perf_df, width=None, hide_index=True)
         else:
             st.info("No agent-specific data yet")
         
@@ -520,7 +520,7 @@ with tab3:
         st.markdown("### 📝 Detailed Evaluation Log")
         if evaluator.interaction_log:
             log_df = pd.DataFrame(evaluator.interaction_log)
-            st.dataframe(log_df, use_container_width=True, hide_index=True)
+            st.dataframe(log_df, width=None, hide_index=True)
         else:
             st.info("No evaluation logs yet")
         
