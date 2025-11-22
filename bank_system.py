@@ -74,6 +74,7 @@ class BankDatabase:
         ''')
 
         # Transactions Table
+        self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS transactions (
                 transaction_id TEXT PRIMARY KEY,
                 account_id TEXT,
