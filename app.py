@@ -333,6 +333,22 @@ with tab1:
                     
                     st.session_state.last_agent_icon = agent_icon
                     st.session_state.last_agent_name = agent_name
+                    st.session_state.history.append({
+                        "sender": email_sender,
+                        "content": email_content,
+                        "agent": agent_used,
+                        "response": response[:50] + "...",
+                        "time": f"{eval_metrics.get('duration', 0):.2f}s",
+                        "quality_score": eval_metrics.get('quality_score', 0),
+                        "routing_correct": eval_metrics.get('routing', {}).get('is_correct', False)
+                    })
+                    
+                    # Log to Database (Global Audit)
+                    try:
+                        db = BankDatabase()
+                        db.log_event(
+                            user_email=email_sender,
+                            query=email_content,
                             agent_used=agent_used,
                             response=response
                         )
