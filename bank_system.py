@@ -74,16 +74,23 @@ class BankDatabase:
         ''')
 
         # Transactions Table
-        self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS transactions (
                 transaction_id TEXT PRIMARY KEY,
                 account_id TEXT,
                 date TEXT,
                 amount REAL,
                 merchant TEXT,
+                category TEXT,
                 FOREIGN KEY(account_id) REFERENCES accounts(account_id)
             )
         ''')
+        
+        # Migration: Add category column if it doesn't exist (for existing databases)
+        try:
+            self.cursor.execute("SELECT category FROM transactions LIMIT 1")
+        except sqlite3.OperationalError:
+            self.cursor.execute("ALTER TABLE transactions ADD COLUMN category TEXT")
+            self.conn.commit()
 
         # Cards Table
         self.cursor.execute('''
