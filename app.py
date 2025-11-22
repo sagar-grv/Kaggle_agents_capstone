@@ -146,7 +146,16 @@ with st.sidebar:
         configure_genai(api_key)
         st.success("API Key Configured!")
     elif os.environ.get("GOOGLE_API_KEY"):
-        st.success("API Key detected from Environment")
+        # Security Check for Leaked Key
+        env_key = os.environ["GOOGLE_API_KEY"]
+        if env_key.startswith("AIzaSyBR0fPdqCAB7"):
+            st.error("⚠️ SECURITY ALERT: A compromised API key was detected in your environment variables (likely from a previous test run).")
+            st.warning("Please restart your terminal/Streamlit server to clear this variable.")
+            # Force clear it for this session
+            del os.environ["GOOGLE_API_KEY"]
+            st.rerun()
+        else:
+            st.success("API Key detected from Environment")
     else:
         st.warning("⚠️ No API Key found. Agents may fail.")
         
