@@ -175,6 +175,20 @@ with st.sidebar:
             st.success("🔓 Admin Mode Unlocked")
         else:
             st.session_state.is_admin = False
+            
+    # Hard Reset Button (For debugging persistence issues)
+    st.markdown("---")
+    if st.button("⚠️ Reset Session & Key", help="Force clear all data and API keys"):
+        # 1. Clear Session State
+        st.session_state.clear()
+        # 2. Clear Env Var if present
+        if "GOOGLE_API_KEY" in os.environ:
+            del os.environ["GOOGLE_API_KEY"]
+        # 3. Break GenAI Config (Force it to forget the key)
+        import google.generativeai as genai
+        genai.configure(api_key="INVALID_KEY_RESET")
+        # 4. Rerun
+        st.rerun()
     
     st.divider()
     
