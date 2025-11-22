@@ -229,22 +229,28 @@ with tab1:
             st.caption("⚡ Try a sample query:")
             col_btn1, col_btn2, col_btn3 = st.columns(3)
             
+            # Initialize session state for input if not exists
+            if "email_content_input" not in st.session_state:
+                st.session_state.email_content_input = ""
+            if "email_sender_input" not in st.session_state:
+                st.session_state.email_sender_input = "alice@example.com"
+
             with col_btn1:
                 if st.button("📊 Balance"):
-                    st.session_state.sample_query = "What's my current account balance?"
-                    st.session_state.sample_sender = "alice@example.com"
+                    st.session_state.email_content_input = "What's my current account balance?"
+                    st.session_state.email_sender_input = "alice@example.com"
                     st.rerun()
             
             with col_btn2:
                 if st.button("💳 Lost Card"):
-                    st.session_state.sample_query = "I lost my credit card! Please block it immediately."
-                    st.session_state.sample_sender = "bob@example.com"
+                    st.session_state.email_content_input = "I lost my credit card! Please block it immediately."
+                    st.session_state.email_sender_input = "bob@example.com"
                     st.rerun()
             
             with col_btn3:
                 if st.button("🏠 Loan Info"):
-                    st.session_state.sample_query = "I want to apply for a home loan. What are the current rates?"
-                    st.session_state.sample_sender = "charlie@example.com"
+                    st.session_state.email_content_input = "I want to apply for a home loan. What are the current rates?"
+                    st.session_state.email_sender_input = "charlie@example.com"
                     st.rerun()
             
             st.divider()
@@ -254,19 +260,17 @@ with tab1:
                 ["alice@example.com", "bob@example.com", "charlie@example.com", "📝 Custom Email"])
             
             if customer_option == "📝 Custom Email":
-                email_sender = st.text_input("Enter Email Address", placeholder="example@email.com")
+                email_sender = st.text_input("Enter Email Address", 
+                                           value=st.session_state.get("email_sender_input", ""),
+                                           key="email_sender_input_widget")
             else:
-                email_sender = st.session_state.get('sample_sender', customer_option)
+                # Update sender if dropdown changes (unless it was set by button just now)
+                email_sender = customer_option
             
+            # Main Input Area
             email_content = st.text_area("Email Content", height=150, 
-                                        value=st.session_state.get('sample_query', ''),
+                                        key="email_content_input",
                                         placeholder="Type your issue here...\ne.g., I lost my card!")
-            
-            # Clear sample after displaying
-            if 'sample_query' in st.session_state:
-                del st.session_state.sample_query
-            if 'sample_sender' in st.session_state:
-                del st.session_state.sample_sender
 
             
             if st.button("Process Email"):
