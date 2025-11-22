@@ -53,6 +53,15 @@ class BankWorkflow:
         logs = []
         start_time = time.time()
         
+        # Validate email content
+        if not email_content or not email_content.strip():
+            return "Error: Please provide a valid query. Empty messages cannot be processed.", ["❌ Validation Failed: Empty query"], {
+                'routing': {'expected': 'N/A', 'actual': 'N/A', 'is_correct': False, 'accuracy': 0},
+                'compliance': {'status': 'REJECTED', 'compliance_rate': 0},
+                'quality_score': 0,
+                'duration': 0
+            }
+        
         # 1. Identify Customer
         customer = self.db.get_customer_by_email(user_email)
         if not customer:

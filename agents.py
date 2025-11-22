@@ -97,17 +97,13 @@ class TriageAgent(Agent):
         # Clean the response to ensure we just get the agent name
         response = self.think(prompt).strip()
         
-        # Handle System Errors (API failure, Rate Limit) by defaulting to AccountAgent
-        # This ensures the user sees the actual error from the agent, not a generic "refusal"
-        if response.startswith("System Error") or response.startswith("System Notice"):
-            return "AccountAgent"
-        
-        # Fallback safety if LLM is chatty
+        # Fallback safety if LLM is chatty or doesn't follow format
         if "CardAgent" in response: return "CardAgent"
         if "LoanAgent" in response: return "LoanAgent"
         if "AccountAgent" in response: return "AccountAgent"
+        if "None" in response or not response: return "AccountAgent"  # Default for unclear queries
         
-        return "None" # Default fallback for unclear/non-banking queries
+        return "AccountAgent"  # Final fallback
 
 class AccountAgent(Agent):
     def handle(self, email, customer):
