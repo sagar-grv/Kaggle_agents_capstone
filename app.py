@@ -41,6 +41,13 @@ from bank_system import BankDatabase
 
 st.set_page_config(page_title="BankAssist Enterprise", page_icon="🏦", layout="wide")
 
+# DEBUG: Log API Key status to console for cloud debugging
+import os
+print(f"DEBUG: API Key present in env: {bool(os.environ.get('GOOGLE_API_KEY'))}")
+if os.environ.get('GOOGLE_API_KEY'):
+    k = os.environ.get('GOOGLE_API_KEY')
+    print(f"DEBUG: Key prefix: {k[:5]}...")
+
 # Custom CSS for Smooth Animations (preserving default colors)
 st.markdown("""
 <style>
@@ -326,23 +333,6 @@ with tab1:
                     
                     st.session_state.last_agent_icon = agent_icon
                     st.session_state.last_agent_name = agent_name
-                    
-                    st.session_state.history.append({
-                        "sender": email_sender,
-                        "content": email_content,
-                        "agent": agent_used,
-                        "response": response[:50] + "...",
-                        "time": f"{eval_metrics.get('duration', 0):.2f}s",
-                        "quality_score": eval_metrics.get('quality_score', 0),
-                        "routing_correct": eval_metrics.get('routing', {}).get('is_correct', False)
-                    })
-                    
-                    # Log to Database (Global Audit)
-                    try:
-                        db = BankDatabase()
-                        db.log_event(
-                            user_email=email_sender,
-                            query=email_content,
                             agent_used=agent_used,
                             response=response
                         )
