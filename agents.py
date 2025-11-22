@@ -53,8 +53,8 @@ class Agent:
         self.model = genai.GenerativeModel('gemini-flash-latest')
 
     def think(self, prompt):
-        max_retries = 3
-        base_delay = 2
+        max_retries = 2  # Reduced from 3 to fail faster on free tier
+        base_delay = 1   # Reduced from 2 to improve responsiveness
         
         for attempt in range(max_retries):
             try:
@@ -82,14 +82,15 @@ class TriageAgent(Agent):
         
         Available Agents:
         1. CardAgent: Handles lost/stolen cards, fraud alerts, blocked cards, and travel notifications. PRIORITY: CRITICAL.
-        2. LoanAgent: Handles loan applications, mortgage rates, and credit inquiries.
+        2. LoanAgent: Handles loan applications, mortgage rates, credit scores, and lending inquiries.
         3. AccountAgent: Handles balance checks, transaction history, statement requests, and general account questions.
         
         Incoming Email: "{email_content}"
         
         Instructions:
         - Analyze the intent of the email.
-        - CRITICAL RULE: If the email contains ANY mention of a lost card, stolen card, fraud, or unauthorized transaction, you MUST route to "CardAgent", even if the user also asks about their balance or other topics. Security is the #1 priority.
+        - CRITICAL RULE 1: If the email contains ANY mention of a lost card, stolen card, fraud, or unauthorized transaction, you MUST route to "CardAgent".
+        - CRITICAL RULE 2: If the user asks to "apply" for anything or mentions "rates", "mortgage", or "credit score", route to "LoanAgent".
         - Output ONLY the name of the agent to route to (e.g., "CardAgent").
         - If the email is NOT related to banking (e.g., weather, sports, personal life, coding), output "None".
         """
