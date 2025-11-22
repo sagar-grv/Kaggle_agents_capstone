@@ -162,6 +162,8 @@ with st.sidebar:
             del os.environ["GOOGLE_API_KEY"]
             st.rerun()
         else:
+            # EXPLICIT CONFIGURATION: Required now that implicit config is removed from agents.py
+            configure_genai(env_key)
             st.success("API Key detected from Environment")
     else:
         st.warning("⚠️ No API Key found. Agents may fail.")

@@ -42,9 +42,8 @@ def configure_genai(api_key):
         return True
     return False
 
-# Try to configure from env immediately if available
-if os.environ.get("GOOGLE_API_KEY"):
-    genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
+# Configuration is now handled explicitly in app.py
+# No implicit loading from environment variables to prevent persistence issues
 
 class Agent:
     def __init__(self, name, role, db):
