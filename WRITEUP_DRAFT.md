@@ -76,7 +76,7 @@ BankAssist uses a modular **Hub-and-Spoke** architecture orchestrated by a centr
 
 ## 3. How to Reproduce
 
-1. **Clone the Repo:** `git clone [your-repo-link]`
+1. **Clone the Repo:** `git clone https://github.com/sagar-grv/Kaggle_agents_capstone.git`
 2. **Install Dependencies:** `pip install -r requirements.txt`
 3. **Run the App:** `streamlit run app.py`
 4. **Enter API Key:** Use your Google Gemini API key in the sidebar.
