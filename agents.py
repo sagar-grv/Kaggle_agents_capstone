@@ -50,33 +50,83 @@ class Agent:
         self.name = name
         self.role = role
         self.db = db
-        self.model = genai.GenerativeModel('gemini-flash-latest')
+        # Using gemini-2.5-flash (confirmed available in user's API key)
+        self.model = genai.GenerativeModel('gemini-2.5-flash')
 
     def think(self, prompt):
+        logs = []
         max_retries = 2  # Reduced from 3 to fail faster on free tier
         base_delay = 1   # Reduced from 2 to improve responsiveness
         
         for attempt in range(max_retries):
             try:
+                # Log API call for visibility
+                logs.append(f"🌐 API CALL: {self.name} ({self.role})")
+                logs.append(f"📤 Sending request to Gemini API (Attempt {attempt + 1}/{max_retries})")
+                logs.append(f"🤖 Model: {self.model.model_name}")
+                
+                start_time = time.time()
+                
                 response = self.model.generate_content(
                     f"You are a {self.role} at a bank. {prompt}"
                 )
-                return response.text
+                
+                duration = time.time() - start_time
+                
+                logs.append(f"✅ API Response received in {duration:.2f}s")
+                logs.append(f"📥 Response length: {len(response.text)} characters")
+                
+                return response.text, logs
             except Exception as e:
                 error_str = str(e)
+                logs.append(f"❌ API Error: {error_str[:100]}...")
+                
                 if "429" in error_str or "ResourceExhausted" in error_str:
                     if attempt < max_retries - 1:
                         sleep_time = base_delay * (2 ** attempt)
+                        logs.append(f"⏳ Rate limited. Retrying in {sleep_time}s...")
                         time.sleep(sleep_time)
                         continue
                     else:
-                        return "System Notice: We are experiencing high traffic. Please try again in a moment. (Rate Limit Reached)"
+                        return "System Notice: We are experiencing high traffic. Please try again in a moment. (Rate Limit Reached)", logs
                 else:
-                    return f"System Error: {error_str}"
-        return "System Error: Unable to generate response."
+                    return f"System Error: {error_str}", logs
+        return "System Error: Unable to generate response.", logs
 
 class TriageAgent(Agent):
+    def rule_based_triage(self, email_content):
+        """
+        Fast, zero-cost routing based on strong keywords.
+        Returns: (AgentName, Reason) or (None, None)
+        """
+        text = email_content.lower()
+        
+        # 1. CRITICAL SECURITY (CardAgent) - Highest Priority
+        security_keywords = ["lost", "stolen", "fraud", "unauthorized", "block card", "hacked", "suspicious"]
+        if any(kw in text for kw in security_keywords):
+            return "CardAgent", "🔒 Rule Match: Security Keyword Detected"
+            
+        # 2. LOANS & CREDIT (LoanAgent)
+        loan_keywords = ["loan", "mortgage", "interest rate", "credit score", "apply for", "lending"]
+        if any(kw in text for kw in loan_keywords):
+            return "LoanAgent", "🏠 Rule Match: Loan Keyword Detected"
+            
+        # 3. ACCOUNTS (AccountAgent)
+        account_keywords = ["balance", "statement", "transaction", "checking", "savings", "deposit", "withdrawal"]
+        if any(kw in text for kw in account_keywords):
+            return "AccountAgent", "💰 Rule Match: Account Keyword Detected"
+            
+        return None, None
+
     def analyze_email(self, email_content):
+        # PHASE 1: Fast Rule-Based Triage (Save API Call)
+        agent_name, reason = self.rule_based_triage(email_content)
+        if agent_name:
+            # Return a fake log so the UI still shows what happened
+            logs = [f"⚡ Triage: Fast-tracked to {agent_name} ({reason})"]
+            return agent_name, logs
+
+        # PHASE 2: LLM Fallback (For ambiguous queries)
         prompt = f"""
         You are the Triage Dispatcher for a bank. Your job is to route incoming emails to the correct specialist agent.
         
@@ -95,15 +145,20 @@ class TriageAgent(Agent):
         - If the email is NOT related to banking (e.g., weather, sports, personal life, coding), output "None".
         """
         # Clean the response to ensure we just get the agent name
-        response = self.think(prompt).strip()
+        response_text, logs = self.think(prompt)
+        response = response_text.strip()
         
         # Fallback safety if LLM is chatty or doesn't follow format
-        if "CardAgent" in response: return "CardAgent"
-        if "LoanAgent" in response: return "LoanAgent"
-        if "AccountAgent" in response: return "AccountAgent"
-        if "None" in response or not response: return "AccountAgent"  # Default for unclear queries
+        if "CardAgent" in response: return "CardAgent", logs
+        if "LoanAgent" in response: return "LoanAgent", logs
+        if "AccountAgent" in response: return "AccountAgent", logs
+        if "None" in response: return "None", logs  # Preserve None for non-banking queries
         
-        return "AccountAgent"  # Final fallback
+        # If response is empty or unclear, default to AccountAgent
+        if not response or len(response.strip()) == 0:
+            return "AccountAgent", logs
+        
+        return "AccountAgent", logs  # Final fallback
 
 class AccountAgent(Agent):
     def handle(self, email, customer):
@@ -210,5 +265,6 @@ class AuditorAgent(Agent):
         - If the email is compliant, output exactly: "APPROVED"
         - If not, output "REJECTED: [Reason]"
         """
-        return self.think(prompt).strip()
+        response_text, logs = self.think(prompt)
+        return response_text.strip(), logs
 

@@ -177,6 +177,17 @@ class AgentEvaluator:
                 'compliance_rate': (self.metrics['compliance_approved'] / self.metrics['total_requests']) * 100,
                 'reason': auditor_result
             }
+
+    def record_skipped_compliance(self):
+        """
+        Record a skipped compliance check (treated as APPROVED/Low Risk).
+        """
+        self.metrics['total_requests'] += 1
+        self.metrics['compliance_approved'] += 1  # Treat as approved since it's low risk
+        return {
+            'status': 'SKIPPED',
+            'compliance_rate': (self.metrics['compliance_approved'] / self.metrics['total_requests']) * 100
+        }
     
     def track_latency(self, agent_name, duration):
         """

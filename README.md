@@ -1,326 +1,123 @@
-# BankAssist: Intelligent Email Query Resolution System
+# 🏦 BankAssist Enterprise
 
-## 🏆 Kaggle Agents Intensive - Capstone Project
+**Intelligent Multi-Agent Banking Support System**
 
-**Track:** Enterprise Agents  
-**Team Name:** Agens
-
-**Members:**
-
-- **SagarGrv** (Team Leader)
-- **Rhythm Mantri** (Member)
+BankAssist is a production-ready AI agent system designed to automate customer support for banking services. Built with **Google Gemini Flash** and **Streamlit**, it uses a multi-agent architecture to securely handle balance inquiries, card security, and loan applications.
 
 ---
 
-## 📋 Overview
+## 🆕 Latest Updates (v2.0)
 
-BankAssist is an enterprise-grade multi-agent system that automates bank customer support email processing. It uses specialized AI agents to triage, investigate, and resolve customer queries while ensuring compliance and security.
+We have significantly optimized the system for performance and robustness:
 
-### The Problem
-
-Banks receive thousands of customer support emails daily. Manual processing is:
-
-- **Slow:** Average response time of 24-48 hours
-- **Expensive:** $15-25 per email in labor costs
-- **Error-Prone:** Human agents miss critical security flags
-
-### The Solution
-
-BankAssist uses a **Hub-and-Spoke** architecture with specialized agents:
-
-1. **Triage Agent:** Routes emails to the right specialist
-2. **Account Agent:** Handles balance inquiries and transactions
-3. **Card Agent:** Manages lost cards and fraud alerts
-4. **Loan Agent:** Processes loan inquiries and applications
-5. **Auditor Agent:** Ensures compliance before sending responses
+* **⚡ Model Upgrade:** Switched to **Gemini 2.5 Flash** for faster, more accurate responses.
+* **📉 66% API Reduction:** Implemented **Hybrid Triage** (Rule-based + LLM) and **Conditional Auditing** to reduce API calls for common queries from 3 to 1.
+* **📝 Enhanced Visibility:** Added verbose API logging in the UI to show exact model interactions and latency.
+* **📊 Dashboard Fixes:** Evaluation metrics now correctly track all queries, including optimized/skipped steps.
 
 ---
 
-## ✨ Recent Enhancements
+## 🚀 Key Features
 
-### Custom Email Input
-
-Users can now enter any email address instead of selecting from preset customers only. Select "📝 Custom Email" from the dropdown to test with any email ID.
-
-### LLM Guardrails
-
-All agents now reject non-banking questions with polite messages:
-
-- **AccountAgent:** Only answers banking services questions
-- **CardAgent:** Only handles card security matters
-- **LoanAgent:** Only processes loan/credit inquiries
-- Off-topic questions (weather, sports, etc.) receive appropriate redirection
-
-### Robust Error Handling
-
-- Try-except wrapper prevents crashes from version mismatches
-- Defensive key access prevents KeyError exceptions
-- Automatic workflow version upgrades
-
-### Interactive UI Enhancements
-
-- **Quick Example Buttons:** One-click sample queries (Balance, Lost Card, Loan) for instant testing
-- **Progress Indicators:** Real-time visualization of the agent workflow (Triage → Routing → Execution)
-- **Agent Activity Timeline:** Visual attribution showing exactly which specialist agent handled the request
-
-### ADK-Style Evaluation System
-
-Comprehensive evaluation metrics inspired by Google's Agents Development Kit:
-
-- **Routing Accuracy:** Tracks correct agent assignment
-- **Response Quality Score:** 0-100 based on tone, structure, content
-- **Compliance Rate:** Auditor approval tracking
-- **Latency Monitoring:** Per-agent performance metrics
-- **Interactive Dashboard:** Real-time KPI visualization
+* **🤖 Multi-Agent Architecture:** Specialized agents for Triage, Accounts, Cards, Loans, and Compliance.
+* **⚡ Hybrid Routing:** Zero-latency rule-based triage for common queries + LLM fallback for complex intents.
+* **🛡️ Enterprise Security:**
+  * **Guardrails:** Strict off-topic rejection.
+  * **Auditor Agent:** Reviews every high-risk response before sending.
+  * **PII Protection:** Mock database ensures no real data leakage.
+* **📊 Evaluation Dashboard:** Real-time metrics for routing accuracy, compliance rates, and quality scores.
+* **📝 Verbose Logging:** Full visibility into API calls, latency, and agent reasoning in the UI.
 
 ---
 
-## 🎯 Key Features (Kaggle Requirements)
+## 📂 Project Structure
 
-### ✅ Multi-Agent System
-
-- **Parallel Agents:** Triage routes to specialized workers
-- **Sequential Agents:** Auditor reviews all responses
-- **Agent Coordination:** Hub-and-Spoke orchestration
-
-### ✅ Tools Integration
-
-- **Custom Tools:** SQLite database queries for customer data
-- **Built-in Tools:** Gemini Flash for natural language generation
-
-### ✅ Observability
-
-- **Logging:** Real-time agent decision logs in UI
-- **Tracing:** Full workflow visibility (Triage → Worker → Auditor)
-- **Metrics:** Routing accuracy, compliance rate, quality scores, latency
-
-### ✅ Bonus Points
-
-- **Gemini Integration:** Uses `gemini-flash-latest` for response generation
-- **Professional UI:** Streamlit dashboard with 4 tabs (Operations, Analytics, Evaluation, System Health)
-- **Evaluation Dashboard:** ADK-style metrics with interactive charts
+```
+├── app.py              # Main Streamlit Application
+├── agents.py           # Agent Definitions (Triage, Account, Card, Loan, Auditor)
+├── workflow.py         # Workflow Orchestration & Logic
+├── bank_system.py      # Mock Banking Database (SQLite)
+├── evaluation.py       # ADK-Style Evaluation Metrics
+├── requirements.txt    # Project Dependencies
+├── docs/               # Documentation & Guides
+│   ├── MANUAL_TESTING_GUIDE.md
+│   ├── CRITICAL_TEST_CASES.md
+│   ├── QUICK_TEST_REFERENCE.md
+│   └── DEPLOYMENT.md
+└── tests/              # Unit & Integration Tests
+```
 
 ---
 
-## 🚀 Quick Start
+## 🛠️ Quick Start
 
-### Prerequisites
-
-- Python 3.10+
-- Google Gemini API Key ([Get one here](https://makersuite.google.com/app/apikey))
-
-### Installation
+### 1. Clone & Install
 
 ```bash
-# Clone the repository
-git clone https://github.com/sagar-grv/Kaggle_agents_capstone.git
-cd Kaggle_agents_capstone
-
-# Install dependencies
+git clone https://github.com/yourusername/bankassist.git
+cd bankassist
 pip install -r requirements.txt
 ```
 
-### Running the Application
+### 2. Run the Application
 
 ```bash
-# Set your Gemini API Key
-export GOOGLE_API_KEY="your_api_key_here"  # Mac/Linux
-# OR
-$env:GOOGLE_API_KEY="your_api_key_here"    # Windows PowerShell
-
-# Launch the Streamlit app
 streamlit run app.py
 ```
 
-Alternatively, you can enter your API key directly in the sidebar when the app launches.
+### 3. Configure API Key
 
-### Usage
+* Open the app in your browser (usually `http://localhost:8501`).
+* Enter your **Google Gemini API Key** in the sidebar.
+* *Don't have a key? Get one [here](https://makersuite.google.com/app/apikey).*
 
-1. Open `http://localhost:8501` in your browser
-2. Enter your Gemini API key in the sidebar (if not set in environment)
-3. Select a customer or choose "📝 Custom Email" to enter your own
-4. Type an email query (e.g., "I lost my card!")
-5. Click "Process Email"
-6. View the AI-generated response, agent logs, and evaluation metrics
+---
 
-### Running Tests
+## 🧪 Testing
 
-```bash
-# Set your API key first
-export GOOGLE_API_KEY="your_api_key_here"
+We provide comprehensive testing guides in the `docs/` folder:
 
-# Run end-to-end tests
-python tests/test_end_to_end.py
-```
+* **[Quick Start Guide](docs/QUICK_TEST_REFERENCE.md):** 5-minute smoke test.
+* **[Manual Testing Guide](docs/MANUAL_TESTING_GUIDE.md):** Detailed scenarios for every agent.
+* **[Critical Stress Tests](docs/CRITICAL_TEST_CASES.md):** Security and edge-case testing.
 
 ---
 
 ## 🏗️ Architecture
 
-```mermaid
-graph TD
-    A[Customer Email] --> B{Triage Agent};
+### The Hybrid Workflow
 
-    B --> C[Account Agent]
-    B --> D[Card Agent]
-    B --> E[Loan Agent]
-
-    C --> F[Auditor Agent]
-    D --> F
-    E --> F
-
-    F --> G[Evaluation System]
-    G --> H[Final Response]
-
-    subgraph Specialized Agents
-        C
-        D
-        E
-    end
-
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style B fill:#bbf,stroke:#333,stroke-width:2px
-    style C fill:#ccf,stroke:#333,stroke-width:2px
-    style D fill:#ccf,stroke:#333,stroke-width:2px
-    style E fill:#ccf,stroke:#333,stroke-width:2px
-    style F fill:#fbc,stroke:#333,stroke-width:2px
-    style G fill:#cff,stroke:#333,stroke-width:2px
-    style H fill:#cfc,stroke:#333,stroke-width:2px
-```
+1. **User Query** → **Triage Agent**
+    * *Fast Path:* Keywords (e.g., "lost card") route immediately.
+    * *Slow Path:* LLM analyzes complex intent.
+2. **Specialist Agent** (Account/Card/Loan)
+    * Retrieves data from `bank_system.py`.
+    * Generates a personalized response using Gemini.
+3. **Auditor Agent** (Conditional)
+    * *High Risk:* Reviews response for compliance (Card/Loan).
+    * *Low Risk:* Skips review for speed (Balance checks).
+4. **Final Response** → User
 
 ---
 
-## 📊 Test Results
+## 📊 Evaluation
 
-All 6 comprehensive test scenarios **PASSED**:
+The system includes a built-in **Evaluation Dashboard** (Tab 3) that tracks:
 
-| Test | Scenario | Agent | Status |
-|------|----------|-------|--------|
-| 1 | Balance Inquiry | AccountAgent | ✅ |
-| 2 | Lost Card Report | CardAgent | ✅ |
-| 3 | Fraud Alert | CardAgent | ✅ |
-| 4 | Transaction History | AccountAgent | ✅ |
-| 5 | Complex Multi-Intent | CardAgent | ✅ |
-| 6 | Loan Inquiry | LoanAgent | ✅ |
-
-**Performance:**
-
-- Routing Accuracy: 100%
-- Compliance Pass Rate: 100%
-- Avg Response Time: 2-3 seconds
-- Quality Scores: 70-95/100
-
-See `TEST_RESULTS.md` for detailed test logs.
+* **Routing Accuracy:** Did the email go to the right agent?
+* **Compliance Rate:** Did the Auditor approve the response?
+* **Quality Score:** Automated scoring of tone and structure.
+* **Latency:** Processing time per request.
 
 ---
 
-## 📁 Project Structure
+## 👥 Team
 
-```
-agents_capstone/
-├── app.py                  # Streamlit UI with evaluation dashboard
-├── agents.py               # Agent definitions with LLM guardrails
-├── workflow.py             # Orchestration logic with evaluation
-├── evaluation.py           # ADK-style metrics tracking
-├── bank_system.py          # SQLite database layer
-├── requirements.txt        # Python dependencies
-├── tests/
-│   └── test_end_to_end.py  # Comprehensive test suite
-├── README.md               # This file
-├── TEST_RESULTS.md         # Test execution report
-├── TESTING_GUIDE.md        # Extreme testing scenarios
-└── DEPLOYMENT.md           # Production deployment guide
-```
+**Kaggle Agents Intensive - Capstone Project**
+
+* **SagarGrv** - Team Leader
+* **Rhythm Mantri** - Core Developer
 
 ---
 
-## 🎥 Demo Video
-
-[Link to your YouTube video - under 3 minutes]
-
-**Video Contents:**
-
-1. Problem Statement (0:00-0:30)
-2. Architecture Overview (0:30-1:00)
-3. Live Demo (1:00-2:30)
-   - Balance inquiry
-   - Lost card report with custom email
-   - Agent logs and evaluation metrics
-   - LLM guardrails demonstration
-4. Value Proposition (2:30-3:00)
-
----
-
-## 💡 Business Value
-
-### Cost Savings
-
-- **Before:** $20/email × 1000 emails/day = $20,000/day
-- **After:** $0.10/email × 1000 emails/day = $100/day
-- **Savings:** $19,900/day = **$7.26M/year**
-
-### Efficiency Gains
-
-- **Response Time:** 24 hours → 3 seconds (99.99% faster)
-- **Accuracy:** 85% → 100% (perfect routing with evaluation)
-- **Compliance:** Manual review → Automated checks with audit trail
-- **Quality:** Inconsistent → Scored 70-95/100 with metrics
-
----
-
-## 🔧 Technical Stack
-
-- **Framework:** Python 3.10
-- **LLM:** Google Gemini Flash
-- **Database:** SQLite
-- **UI:** Streamlit
-- **Evaluation:** Custom ADK-inspired metrics
-- **Testing:** Comprehensive test suite with 6 scenarios
-
----
-
-## 🛡️ Security & Compliance
-
-- **No Real Data:** Uses synthetic customer data only
-- **API Key Security:** Never hardcoded, environment variable only
-- **Compliance Layer:** Auditor Agent prevents risky responses
-- **Audit Trail:** All decisions logged for review
-- **LLM Guardrails:** Prevents off-topic responses
-
----
-
-## 📚 Documentation
-
-- **README.md** (this file): Project overview and quick start
-- **TEST_RESULTS.md**: Detailed test execution logs
-- **TESTING_GUIDE.md**: Extreme testing scenarios and edge cases
-- **DEPLOYMENT.md**: Multi-user deployment and production strategies
-
----
-
-## 🚧 Future Enhancements
-
-1. **Multi-Language:** Support Spanish, Hindi, etc.
-2. **Voice Integration:** Process voice messages
-3. **Sentiment Analysis:** Detect angry customers for priority routing
-4. **A/B Testing:** Compare agent performance
-5. **Email Validation:** Validate custom email addresses
-6. **Persistent Analytics:** Store evaluation metrics in database
-
----
-
-## 📝 License
-
-MIT License - See LICENSE file for details
-
----
-
-## 🙏 Acknowledgments
-
-- **Google Kaggle** for hosting the Agents Intensive competition
-- **Gemini API Team** for the powerful Flash model
-- **Streamlit** for the excellent UI framework
-
----
-
-**Built with ❤️ by Team Agens for Kaggle Agents Intensive Capstone**
+*Built with ❤️ using Google Gemini and Streamlit.*

@@ -2,30 +2,24 @@
 __pycache__/
 *.py[cod]
 *$py.class
-*.so
-.Python
-
-# Virtual Environment
 .venv/
 venv/
-ENV/
+env/
 
-# IDEs
-.vscode/
-.idea/
-*.swp
-*.swo
+# Streamlit
+.streamlit/
 
 # Database
 *.db
-*.sqlite
+bankassist.db
 
-# Test outputs (should be regenerated)
-test_results_internal.txt
+# Environment Variables
+.env
+
+# IDE
+.vscode/
+.idea/
 
 # OS
 .DS_Store
 Thumbs.db
-
-# Logs
-*.log

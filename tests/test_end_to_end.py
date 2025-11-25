@@ -28,7 +28,7 @@ def run_test(name, email, user_email, expected_agent):
     
     workflow = BankWorkflow()
     start_time = time.time()
-    response, logs = workflow.process_email(email, user_email)
+    response, logs, eval_metrics = workflow.process_email(email, user_email)
     duration = time.time() - start_time
     
     # Extract Triage Decision

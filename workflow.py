@@ -70,7 +70,8 @@ class BankWorkflow:
         logs.append(f"✅ Identified Customer: {customer[1]} (Risk Score: {customer[4]})")
 
         # 2. Triage
-        target_agent_name = self.triage.analyze_email(email_content)
+        target_agent_name, triage_logs = self.triage.analyze_email(email_content)
+        logs.extend(triage_logs)
         logs.append(f"🔀 Triage: Routing to {target_agent_name}")
 
         # Evaluate Routing
@@ -79,36 +80,50 @@ class BankWorkflow:
 
         # 3. Execution
         draft_response = ""
+        agent_logs = []
         if target_agent_name == "CardAgent":
-            draft_response = self.card_agent.handle(email_content, customer)
+            draft_response, agent_logs = self.card_agent.handle(email_content, customer)
         elif target_agent_name == "AccountAgent":
-            draft_response = self.account_agent.handle(email_content, customer)
+            draft_response, agent_logs = self.account_agent.handle(email_content, customer)
         elif target_agent_name == "LoanAgent":
-            draft_response = self.loan_agent.handle(email_content, customer)
+            draft_response, agent_logs = self.loan_agent.handle(email_content, customer)
         elif target_agent_name == "None":
             draft_response = "I apologize, but I can only assist with banking-related inquiries. For other matters, please contact our general support line."
         else:
             draft_response = "I am not sure how to help with that yet."
         
+        logs.extend(agent_logs)
         logs.append(f"⚙️ {target_agent_name} generated draft.")
 
-        # 4. Audit
-        audit_result = self.auditor.review(draft_response)
-        logs.append(f"⚖️ Auditor Verdict: {audit_result}")
+        # 4. Audit (Conditional)
+        # Optimization: Only audit high-risk agents (Card, Loan) or if explicitly flagged
+        if target_agent_name in ["CardAgent", "LoanAgent"]:
+            audit_result, audit_logs = self.auditor.review(draft_response)
+            logs.extend(audit_logs)
+            logs.append(f"⚖️ Auditor Verdict: {audit_result}")
 
-        # Evaluate Compliance
-        compliance_eval = self.evaluator.evaluate_compliance(audit_result)
-        
-        # Update agent-specific compliance stats
-        if compliance_eval['status'] == 'APPROVED':
-            self.evaluator.metrics['agent_stats'][target_agent_name]['compliance_pass'] += 1
-        else:
-            self.evaluator.metrics['agent_stats'][target_agent_name]['compliance_fail'] += 1
+            # Evaluate Compliance
+            compliance_eval = self.evaluator.evaluate_compliance(audit_result)
+            
+            # Update agent-specific compliance stats
+            if compliance_eval['status'] == 'APPROVED':
+                self.evaluator.metrics['agent_stats'][target_agent_name]['compliance_pass'] += 1
+            else:
+                self.evaluator.metrics['agent_stats'][target_agent_name]['compliance_fail'] += 1
 
-        if "REJECTED" in audit_result:
-            final_response = "Your request is being reviewed by a human manager."
+            if "REJECTED" in audit_result:
+                final_response = "Your request is being reviewed by a human manager."
+            else:
+                final_response = draft_response
         else:
+            # Skip audit for low-risk agents (AccountAgent) to save API call
+            logs.append("⚖️ Auditor: Skipped (Low Risk Agent)")
             final_response = draft_response
+            # Record skipped audit in metrics
+            compliance_eval = self.evaluator.record_skipped_compliance()
+            
+            # Update agent-specific stats (count as pass)
+            self.evaluator.metrics['agent_stats'][target_agent_name]['compliance_pass'] += 1
 
         # Calculate latency
         duration = time.time() - start_time

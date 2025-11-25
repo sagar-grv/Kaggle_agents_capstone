@@ -133,9 +133,12 @@ class BankDatabase:
         columns = [description[0] for description in self.cursor.description]
         return [dict(zip(columns, row)) for row in self.cursor.fetchall()]
 
-        return [dict(zip(columns, row)) for row in self.cursor.fetchall()]
-
     def _seed_data(self):
+        # Check if data already exists to prevent duplicates
+        self.cursor.execute("SELECT COUNT(*) FROM customers")
+        if self.cursor.fetchone()[0] > 0:
+            return
+
         print("Seeding mock data...")
         
         # Mock Customers

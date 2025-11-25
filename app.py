@@ -41,12 +41,7 @@ from bank_system import BankDatabase
 
 st.set_page_config(page_title="BankAssist Enterprise", page_icon="🏦", layout="wide")
 
-# DEBUG: Log API Key status to console for cloud debugging
-import os
-print(f"DEBUG: API Key present in env: {bool(os.environ.get('GOOGLE_API_KEY'))}")
-if os.environ.get('GOOGLE_API_KEY'):
-    k = os.environ.get('GOOGLE_API_KEY')
-    print(f"DEBUG: Key prefix: {k[:5]}...")
+# Removed debug logging for production security
 
 # Custom CSS for Smooth Animations (preserving default colors)
 st.markdown("""
@@ -150,8 +145,23 @@ with st.sidebar:
     api_key = st.text_input("Google API Key", type="password", help="Enter your Gemini API Key here.")
     
     if api_key:
-        configure_genai(api_key)
-        st.success("API Key Configured!")
+        # Validate API key before configuring
+        try:
+            import google.generativeai as genai
+            genai.configure(api_key=api_key)
+            # Test the key with a simple model list call
+            models = genai.list_models()
+            list(models)  # Force evaluation
+            configure_genai(api_key)
+            st.session_state.api_key_valid = True
+            st.success("✅ API Key Validated & Configured!")
+        except Exception as e:
+            st.session_state.api_key_valid = False
+            error_msg = str(e)
+            if "invalid" in error_msg.lower() or "api_key" in error_msg.lower() or "authentication" in error_msg.lower():
+                st.error("❌ Invalid API Key. Please check your key and try again.")
+            else:
+                st.error(f"❌ API Key Validation Failed: {error_msg}")
     elif os.environ.get("GOOGLE_API_KEY"):
         # Security Check for Leaked Key
         env_key = os.environ["GOOGLE_API_KEY"]
@@ -164,15 +174,19 @@ with st.sidebar:
         else:
             # EXPLICIT CONFIGURATION: Required now that implicit config is removed from agents.py
             configure_genai(env_key)
+            st.session_state.api_key_valid = True
             st.success("API Key detected from Environment")
     else:
+        st.session_state.api_key_valid = False
         st.warning("⚠️ No API Key found. Agents may fail.")
         
     # Admin Access (Hidden)
     st.markdown("---")
     if st.checkbox("Developer Access", key="admin_mode_toggle"):
         admin_password = st.text_input("Admin Password", type="password")
-        if admin_password == "Sagar123":
+        # Use environment variable for admin password (more secure)
+        expected_password = os.environ.get("ADMIN_PASSWORD", "BankAssist2024!")
+        if admin_password == expected_password:
             st.session_state.is_admin = True
             st.success("🔓 Admin Mode Unlocked")
         else:
@@ -306,6 +320,16 @@ with tab1:
 
             
             if st.button("Process Email"):
+                # Check for empty email content first
+                if not email_content or not email_content.strip():
+                    st.error("⚠️ Please enter an email message before processing.")
+                    st.stop()
+                
+                # Check API key before processing
+                if not st.session_state.get('api_key_valid', False):
+                    st.error("⚠️ Please provide a valid Google API Key in the sidebar before processing emails.")
+                    st.stop()
+                
                 # Progress indicator with real-time steps
                 import time
                 with st.status("🔄 Processing email...", expanded=True) as status:
@@ -396,12 +420,14 @@ with tab1:
             # Agent Logs
             with st.expander("🧠 View Agent Thought Process (Logs)", expanded=False):
                 for log in st.session_state.last_logs:
-                    if "Triage" in log:
+                    if "Triage" in log and "Routing" in log:
                         st.info(log)
                     elif "Auditor" in log:
                         st.warning(log)
                     elif "Error" in log:
                         st.error(log)
+                    elif "🌐 API CALL" in log or "📤" in log or "🤖" in log or "✅ API" in log or "📥" in log:
+                        st.code(log, language="text")
                     else:
                         st.write(log)
         else:
@@ -423,7 +449,7 @@ with tab2:
         
         # Detailed Log Table
         st.markdown("### 📝 Detailed Interaction Log")
-        st.dataframe(df, width=None)
+        st.dataframe(df, width='stretch')
         
         # Evaluation Metrics
         st.markdown("### 🎯 System Evaluation")
@@ -512,7 +538,7 @@ with tab3:
         
         if performance_data:
             perf_df = pd.DataFrame(performance_data)
-            st.dataframe(perf_df, width=None, hide_index=True)
+            st.dataframe(perf_df, width='stretch', hide_index=True)
         else:
             st.info("No agent-specific data yet")
         
@@ -520,7 +546,7 @@ with tab3:
         st.markdown("### 📝 Detailed Evaluation Log")
         if evaluator.interaction_log:
             log_df = pd.DataFrame(evaluator.interaction_log)
-            st.dataframe(log_df, width=None, hide_index=True)
+            st.dataframe(log_df, width='stretch', hide_index=True)
         else:
             st.info("No evaluation logs yet")
         
