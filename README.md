@@ -83,7 +83,46 @@ We provide comprehensive testing guides in the `docs/` folder:
 
 ---
 
-## 🏗️ Architecture
+### 🏗️ Architecture
+
+```mermaid
+graph TD
+    User[👤 User Query] --> Triage[🚦 Triage Agent]
+    
+    subgraph "Hybrid Routing Layer"
+        Triage -- "Keywords (Fast Path)" --> Rules{⚡ Rule Match?}
+        Triage -- "Ambiguous (Slow Path)" --> LLM[🤖 Gemini LLM]
+    end
+    
+    Rules -- Yes --> Router[🔀 Router]
+    LLM --> Router
+    
+    subgraph "Specialist Agents"
+        Router -->|Balance/Txn| Account[👤 Account Agent]
+        Router -->|Security/Fraud| Card[💳 Card Agent]
+        Router -->|Loans/Rates| Loan[🏠 Loan Agent]
+    end
+    
+    Account <-->|Read Data| DB[(🗄️ Bank DB)]
+    Card <-->|Update Data| DB
+    Loan <-->|Read Data| DB
+    
+    Account --> Draft[📝 Draft Response]
+    Card --> Draft
+    Loan --> Draft
+    
+    subgraph "Compliance & Safety Layer"
+        Draft --> AuditCheck{⚖️ High Risk?}
+        AuditCheck -- "Yes (Card/Loan)" --> Auditor[👮 Auditor Agent]
+        AuditCheck -- "No (Account)" --> Skip[⏩ Skip Audit]
+        Auditor -- "Approved" --> Final[✅ Final Response]
+        Auditor -- "Rejected" --> Reject[⛔ Rejection Notice]
+        Skip --> Final
+    end
+    
+    Final --> User
+    Reject --> User
+```
 
 ### The Hybrid Workflow
 
